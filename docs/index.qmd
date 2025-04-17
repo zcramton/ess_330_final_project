@@ -249,6 +249,8 @@ all_eda_plots <- (land_area_plot | land_vs_park_area_plot) /
   
   # Display patchwork plots
   all_eda_plots
+  
+  # rachel test
 
 ```
 
