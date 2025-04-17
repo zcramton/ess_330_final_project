@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="generator" content="quarto-1.5.57">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+    <title>ESS 330 Final Project Report - Lab 9</title>
+    <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      ul.task-list{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+        vertical-align: middle;
+      }
+      /* CSS for syntax highlighting */
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      /* CSS for citations */
+      div.csl-bib-body { }
+      div.csl-entry {
+        clear: both;
+        margin-bottom: 0em;
+      }
+      .hanging-indent div.csl-entry {
+        margin-left:2em;
+        text-indent:-2em;
+      }
+      div.csl-left-margin {
+        min-width:2em;
+        float:left;
+      }
+      div.csl-right-inline {
+        margin-left:2em;
+        padding-left:1em;
+      }
+      div.csl-indent {
+        margin-left: 2em;
+      }    </style>
+
+    <style>
+      body.hypothesis-enabled #quarto-embed-header {
+        padding-right: 36px;
+      }
+
+      #quarto-embed-header {
+        height: 3em;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: solid 1px;
+      }
+
+      #quarto-embed-header h6 {
+        font-size: 1.1em;
+        padding-top: 0.6em;
+        margin-left: 1em;
+        margin-right: 1em;
+        font-weight: 400;
+      }
+
+      #quarto-embed-header a.quarto-back-link,
+      #quarto-embed-header a.quarto-download-embed {
+        font-size: 0.8em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        margin-left: 1em;
+        margin-right: 1em;
+      }
+
+      .quarto-back-container {
+        padding-left: 0.5em;
+        display: flex;
+      }
+
+      .headroom {
+          will-change: transform;
+          transition: transform 200ms linear;
+      }
+
+      .headroom--pinned {
+          transform: translateY(0%);
+      }
+
+      .headroom--unpinned {
+          transform: translateY(-100%);
+      }      
+    </style>
+
+    <script>
+    window.document.addEventListener("DOMContentLoaded", function () {
+
+      var header = window.document.querySelector("#quarto-embed-header");
+      const titleBannerEl = window.document.querySelector("body > #title-block-header");
+      if (titleBannerEl) {
+        titleBannerEl.style.paddingTop = header.clientHeight + "px";
+      }
+      const contentEl = window.document.getElementById('quarto-content');
+      for (const child of contentEl.children) {
+        child.style.paddingTop = header.clientHeight + "px";
+        child.style.marginTop = "1em";
+      }
+
+      // Use the article root if the `back` call doesn't work. This isn't perfect
+      // but should typically work
+      window.quartoBackToArticle = () => {
+        var currentUrl = window.location.href;
+        window.history.back();
+        setTimeout(() => {
+            // if location was not changed in 100 ms, then there is no history back
+            if(currentUrl === window.location.href){              
+                // redirect to site root
+                window.location.href = "index.html";
+            }
+        }, 100);
+      }
+
+      const headroom = new window.Headroom(header, {
+        tolerance: 5,
+        onPin: function () {
+        },
+        onUnpin: function () {
+        },
+      });
+      headroom.init();
+    });
+    </script>
+
+    
+<script src="site_libs/manuscript-notebook/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+     <script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>  <link href="site_libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+
+<script src="site_libs/tabwid-1.1.3/tabwid.js"></script>
+  
+      <meta name="citation_title" content="ESS 330 Final Project Report - Lab 9">
+<meta name="citation_author" content="Bella Conrad">
+<meta name="citation_author" content="Zachary Cramton">
+<meta name="citation_author" content="Rachel Delorie">
+<meta name="citation_language" content="en">
+<meta name="citation_reference" content="citation_title=Urbanization and development: Multidisciplinary perspectives;,citation_author=Jo Beall;,citation_author=Basudeb Guha-Khasnobis;,citation_author=Ravi Kanbur;,citation_publication_date=2010;,citation_cover_date=2010;,citation_year=2010;">
+<meta name="citation_reference" content="citation_title=The new urban world 2050: Perspectives, prospects and problems;,citation_author=Janet E Kohlhase;,citation_publication_date=2013;,citation_cover_date=2013;,citation_year=2013;,citation_issue=2;,citation_volume=5;,citation_journal_title=Regional Science Policy &amp;amp;amp; Practice;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=The changing demography of rural and small-town america;,citation_author=Tim Slack;,citation_author=Leif Jensen;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_issue=5;,citation_volume=39;,citation_journal_title=Population Research and Policy Review;,citation_publisher=Springer;">
+<meta name="citation_reference" content="citation_title=Redefining Urban Areas following the 2020 Census;,citation_abstract=“Urban” and “rural” are terms that bring to mind specific kinds of landscapes—densely developed areas in the case of urban, and small towns, farms and open spaces in the case of rural.;,citation_author=Michael Ratcliffe;,citation_publication_date=2022-12;,citation_cover_date=2022-12;,citation_year=2022;,citation_fulltext_html_url=https://www.census.gov/newsroom/blogs/random-samplings/2022/12/redefining-urban-areas-following-2020-census.html;,citation_journal_title=Census.gov;">
+<meta name="citation_reference" content="citation_title=The US demographic transition;,citation_author=Jeremy Greenwood;,citation_author=Ananth Seshadri;,citation_publication_date=2002;,citation_cover_date=2002;,citation_year=2002;,citation_issue=2;,citation_volume=92;,citation_journal_title=American Economic Review;,citation_publisher=American Economic Association;">
+<meta name="citation_reference" content="citation_title=The second demographic transition: A concise overview of its development;,citation_author=Ron Lesthaeghe;,citation_publication_date=2014;,citation_cover_date=2014;,citation_year=2014;,citation_issue=51;,citation_volume=111;,citation_journal_title=Proceedings of the National Academy of Sciences;,citation_publisher=National Academy of Sciences;">
+<meta name="citation_reference" content="citation_publication_date=2025-01;,citation_cover_date=2025-01;,citation_year=2025;,citation_fulltext_html_url=https://data.unhabitat.org/pages/open-spaces-and-green-areas;,citation_journal_title=Urban Indicators Database;">
+<meta name="citation_reference" content="citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_fulltext_html_url=https://parkserve.tpl.org/downloads/historic/2020_ParkScoreRank.pdf;,citation_journal_title=The Trust for Public Land;">
+<meta name="citation_reference" content="citation_title=UN habitat indicators database: Evaluation as a source of the status of urban development problems and programs;,citation_author=Richard May;,citation_author=Kevin Rex;,citation_author=Lisa Bellini;,citation_author=Sakera Sadullah;,citation_author=Emily Nishi;,citation_author=Francette James;,citation_author=Angela Mathangani;,citation_publication_date=2000;,citation_cover_date=2000;,citation_year=2000;,citation_issue=3;,citation_volume=17;,citation_journal_title=Cities;,citation_publisher=Elsevier;">
+</head>
+
+  <body class="quarto-notebook">
+    <div id="quarto-embed-header" class="headroom fixed-top bg-primary">
+      
+      <a onclick="window.quartoBackToArticle(); return false;" class="btn btn-primary quarto-back-link" href=""><i class="bi bi-caret-left"></i> Back to Article</a>
+      <h6><i class="bi bi-journal-code"></i> Article Notebook</h6>
+
+            <a href="./index.qmd" class="btn btn-primary quarto-download-embed" download="index.qmd">Download Source</a>
+          </div>
+
+     <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">ESS 330 Final Project Report - Lab 9</h1>
+          </div>
+
+    
+    <div class="quarto-title-meta-container">
+      <div class="quarto-title-meta-column-start">
+            <div class="quarto-title-meta-author">
+          <div class="quarto-title-meta-heading">Authors</div>
+          <div class="quarto-title-meta-heading">Affiliation</div>
+          
+                <div class="quarto-title-meta-contents">
+            <p class="author">Bella Conrad </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Colorado State University
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Zachary Cramton </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Colorado State University
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Rachel Delorie </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Colorado State University
+                      </p>
+                  </div>
+                    </div>
+        
+        <div class="quarto-title-meta">
+
+                      
+          
+                
+              </div>
+      </div>
+      <div class="quarto-title-meta-column-end quarto-other-formats-target">
+      </div>
+    </div>
+
+
+
+    <div class="quarto-other-links-text-target">
+    </div>  </div>
+</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#note-to-render-you-need-to-type-quarto-render-.index.qmd-into-the-terminal-window." id="toc-note-to-render-you-need-to-type-quarto-render-.index.qmd-into-the-terminal-window." class="nav-link active" data-scroll-target="#note-to-render-you-need-to-type-quarto-render-.index.qmd-into-the-terminal-window.">NOTE: To render you need to type “quarto render ./index.qmd” into the terminal window.</a></li>
+  <li><a href="#urbanization-density-and-access-to-public-parks-in-the-united-states" id="toc-urbanization-density-and-access-to-public-parks-in-the-united-states" class="nav-link" data-scroll-target="#urbanization-density-and-access-to-public-parks-in-the-united-states">Urbanization, Density and Access to Public Parks in the United States</a>
+  <ul class="collapse">
+  <li><a href="#abstract" id="toc-abstract" class="nav-link" data-scroll-target="#abstract">Abstract</a>
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#data-overview" id="toc-data-overview" class="nav-link" data-scroll-target="#data-overview">Data Overview</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a></li>
+  </ul></li>
+  <li><a href="#exploratory-data-analysis-eda" id="toc-exploratory-data-analysis-eda" class="nav-link" data-scroll-target="#exploratory-data-analysis-eda">Exploratory Data Analysis (EDA)</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">      
+
+       <section id="note-to-render-you-need-to-type-quarto-render-.index.qmd-into-the-terminal-window." class="level3">
+<h3 class="anchored" data-anchor-id="note-to-render-you-need-to-type-quarto-render-.index.qmd-into-the-terminal-window.">NOTE: To render you need to type “quarto render ./index.qmd” into the terminal window.</h3>
+</section>
+<section id="urbanization-density-and-access-to-public-parks-in-the-united-states" class="level1">
+<h1>Urbanization, Density and Access to Public Parks in the United States</h1>
+<section id="abstract" class="level2">
+<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
+<p>
+</p><p>Since 2008, the majority of the world’s population has lived in urban areas, a result of urbanization in developing countries <span class="citation" data-cites="kohlhase2013new beall2010urbanization">(<a href="#ref-beall2010urbanization" role="doc-biblioref">Beall et al., 2010</a>; <a href="#ref-kohlhase2013new" role="doc-biblioref">Kohlhase, 2013</a>)</span>. The United States developed earlier than many nations, with more than 50 percent of the population living in urban areas.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition of Urban Areas in Census History
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Prior to the 2020 Census urban areas were defined as any area with greater than 2500 people. Following the 2010 census urban clusters described areas with populations greater than 2,500 and less than 50,000; urbanized areas described areas with a population greater than 50,000. For the 2020 Census the threshold was changed to 5000 people <span class="citation" data-cites="ratcliffe_redefining_2022">(<a href="#ref-ratcliffe_redefining_2022" role="doc-biblioref">Ratcliffe, 2022</a>)</span>.</p>
+</div>
+</div>
+<p>
+by the 14th Census in 1920. In the century since the 1920 census the percentage of individuals living in urban areas has increased to 80.7% <span class="citation" data-cites="slack2020changing">(<a href="#ref-slack2020changing" role="doc-biblioref">Slack &amp; Jensen, 2020</a>)</span>. As more people moved to urban areas, those areas expanded forming urbanized areas and large cities.
+</p><p>
+Urban planning has existed for centuries out of necessity, historically dominated by efficiency and utilitarianism, optimizing the world we live in for profitability, corporate productivity, and automobile-based mobility. This optimization came with sacrifices, which now impact an increasingly large majority of the population. In recent years, the discipline has begun to prioritize human factors over utilitarian efficiency. Thousands of years of living in rural settings makes urban living hard for most people’s biology. Connection to nature and time outdoors even in small amounts has been shown to be a vital part maintaining physical and mental health [DOTHIS:: Find additional source]. In an effort to make urban spaces more livable, planners are turning to parks and natural areas to connect people to nature.
+</p><p>
+</p><p>Equity issues aside, overturning and correcting more than a century of bad planning is a daunting task. Many cities filled in and built up over the course of the 20th century as land became a premium commodity [DOTHIS:: Find additional source]. Does this density present significant challenges for today’s planning professionals? This research seeks to investigate the relationship between urban demographics like density and park access. In exploring this relationship, we hypothesize that there is an intermediate/sublinear relationship between urban population density and public open space availability.</p>
+</section>
+<section id="data-overview" class="level3">
+<h3 class="anchored" data-anchor-id="data-overview">Data Overview</h3>
+<p>
+This report uses data from the UN-Habitat Urban Indicators Database and the ParkServe® Database maintained by the Trust for Public Land. The UN data relates to the UN-SDG 11.7.1 pertaining to access to open spaces and green areas.
+</p><p>
+</p><p>The January 2025 version of the UN Open Spaces and Green Areas data includes the average share of urban areas allocated to streets and open public spaces as well as the share of the urban population with convenient access to an open public space.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+UN Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In this case, the UN defines “convenient access to an open public space” as the “urban population withing 400 meters walking distance along the street network to an open public space” <span class="citation" data-cites="may2000habitat">(<a href="#ref-may2000habitat" role="doc-biblioref">May et al., 2000</a>)</span>.</p>
+</div>
+</div>
+<p>
+These data collected by the UN were collected in 2020 and provided as a .xls format spreadsheet. These data were converted to .csv format with Microsoft Excel. The ParkServe® data selected for use is the 2020 data set to match the year the UN data was recorded. Specifically, this report uses elements of the City Park Facts: Acreage &amp; Park System Highlights. The ParkServe® data is much less synthesized and was available as a .xml file. The file was structured for viewing as a spreadsheet rather than for further analysis and included multiple worksheets withing the workbook. In converting the file to a .csv file, the data spread across multiple worksheets was collated in a single worksheet and converted to a summarized dataset .csv file.
+</p><p>
+</p><p>These data are lacking a shared numerical position data type but share a city name column formatted as “city_name, two_letter_state_abbreviation”. There is not perfect overlap between cities with data in each database however, there are 25 cities shared between the datasets. Cities present in only one data set will be culled when the data is joined.</p>
+</section>
+<section id="methods" class="level3">
+<h3 class="anchored" data-anchor-id="methods">Methods</h3>
+<ol type="1">
+<li>Clean the data. The raw data were downloaded as Excel spreadsheets, some reformatting in Excel was required to effectively exporting as a .csv file and importing the new summarized file to RStudio. Remaining data cleaning will occur in R as needed including any header changes or additional columns needed.</li>
+<li>Conduct Exploratory Data Analysis (EDA).</li>
+<li>Join datasets by “city name” to have a complete working dataset. These data will be combined into a single data frame with an inner join because there is a large number of cities listed in one data set but not the other. The new dataset will include only cities found in both datasets, with columns from both.</li>
+</ol>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Limiting Scope
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The cities found in only one dataset will be cut from the data to accommodate the limited scope of the project. With a bigger scope it is possible that additional data could be used to understand these patterns with more depth.</p>
+</div>
+</div>
+<ol start="4" type="1">
+<li>Prep data and split it into training and testing datasets. Perform a 10-fold cross-validation on training data.</li>
+<li>Create a recipe.</li>
+<li>Set up several models in regression mode.</li>
+<li>Create a workflow set including the previously written models and the recipe.</li>
+<li>Map function over workflow using workflow map.</li>
+<li>Using the highest performing model, fit the data and augment.</li>
+<li>Plot and graph data to visually display test results.</li>
+<li>Explore using the model to predict values for cities included in only one document (if time allows).</li>
+</ol>
+</section>
+</section>
+<section id="exploratory-data-analysis-eda" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis-eda">Exploratory Data Analysis (EDA)</h2>
+<p>
+</p><p>The data has already been discussed in general terms in the data overview section. There will be a readme file created to elaborate on the sources, formatting and manipulation required for each dataset before joining them into the urban_parks_data data frame. In general terms, prior to importing into RStudio, the .xml files the data came in were opened in MS Excel; the sheets were formatted to be converted to .csv files including condensing multiple worksheets of the ParkServe® data into a sinigle sheet for easier conversion to a .csv file. While some of the cleaning done in Excel could have been completed in RStudio, it was not efficient to do so. Using Excel was faster and more flexible for that use case. Similar reformatting was required with the UN data as the headers were unreasonably long by default. The readme that will be created for each (or both) files will include a more detailed summary of what each variable means.</p>
+<div class="cell-container"><div class="cell-decorator"><pre>In [1]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'here' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>here() starts at C:/Users/Zacha/github/CSU/ESS 330/ess_330_final_project</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(flextable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'flextable'
+
+The following object is masked from 'package:purrr':
+
+    compose</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'patchwork' was built under R version 4.4.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create some visualizations and descriptions of what data you have, where you got it, and how and if you need to clean and manipulate it for your project</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Import data from csvs and clean NAs</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>parkserve_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"clean_data/parkserve_summarized_facts_2020.csv"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 100 Columns: 15
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (10): city_name, city_pop, land_area, revised_area, percent_designed_par...
+dbl  (5): parkland_area, designed_park_area, natural_park_area, parkland_per...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>un_land_use_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"clean_data/un_land_use.csv"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 59 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (1): city_name
+dbl (2): mean_percent_built_open_space, mean_percent_open_space_access
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add columns and finish cleaning parkserve data</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>clean_parkserve_data <span class="ot">&lt;-</span> parkserve_data <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="sc">-</span>city_name, <span class="sc">~</span> <span class="fu">as.numeric</span>(.x)),  <span class="co"># Convert all columns to numeric except for city name</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">parkland_percent =</span> parkland_percent <span class="sc">*</span> <span class="dv">100</span>, <span class="co"># Convert parkland percent from ratio</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fix design/natural park area percentage calculations</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">percent_designed_parks =</span> <span class="fu">ifelse</span>(parkland_area <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA</span>, (designed_park_area <span class="sc">/</span> parkland_area) <span class="sc">*</span> <span class="dv">100</span>),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">percent_natural_parks =</span> <span class="fu">ifelse</span>(parkland_area <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA</span>, (natural_park_area <span class="sc">/</span> parkland_area) <span class="sc">*</span> <span class="dv">100</span>),</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">#New calculation for designed-natural area ratio</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">dn_area_ratio =</span> <span class="fu">ifelse</span>(percent_natural_parks <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA</span>, percent_designed_parks <span class="sc">/</span> percent_natural_parks)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Join data removing cities found in only one of the two datasets</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>urban_parks_data <span class="ot">&lt;-</span> clean_parkserve_data <span class="sc">%&gt;%</span> </span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(un_land_use_data, <span class="at">by =</span> <span class="st">"city_name"</span>)  </span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic data structure exploration</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(urban_parks_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 25
+Columns: 18
+$ city_name                      &lt;chr&gt; "Anchorage, AK", "Atlanta, GA", "Boston…
+$ city_pop                       &lt;dbl&gt; 299100, 498059, 687725, 2744859, 377963…
+$ land_area                      &lt;dbl&gt; 1090997, 85217, 30897, 145686, 49726, 2…
+$ revised_area                   &lt;dbl&gt; 1086019, 84250, 29175, 136796, 46880, 2…
+$ parkland_area                  &lt;dbl&gt; 914138, 5293, 5072, 13609, 3170, 20352,…
+$ designed_park_area             &lt;dbl&gt; 2417, 3864, 2556, 8593, 1792, 10974, 40…
+$ natural_park_area              &lt;dbl&gt; 911721, 1429, 2516, 4430, 1378, 9378, 1…
+$ parkland_percent               &lt;dbl&gt; 84.173297, 6.282493, 17.384747, 9.94839…
+$ percent_designed_parks         &lt;dbl&gt; 0.2644021, 73.0020782, 50.3943218, 63.1…
+$ percent_natural_parks          &lt;dbl&gt; 99.735598, 26.997922, 49.605678, 32.551…
+$ pop_density                    &lt;dbl&gt; 0.28, 5.91, 23.57, 20.07, 8.06, 6.39, 7…
+$ parkland_per_1k_pop            &lt;dbl&gt; 3056.295553, 10.627255, 7.375041, 4.744…
+$ park_units                     &lt;dbl&gt; 228, 416, 373, 645, 179, 397, 302, 70, …
+$ park_units_per_10k_pop         &lt;dbl&gt; 7.622869, 8.352424, 5.423680, 2.349847,…
+$ percent_half_mile_walk         &lt;dbl&gt; 0.75091, 0.72447, 0.99790, 0.98220, 0.8…
+$ dn_area_ratio                  &lt;dbl&gt; 0.00265103, 2.70398880, 1.01589825, 1.9…
+$ mean_percent_built_open_space  &lt;dbl&gt; 22.0, 13.8, 19.8, 17.2, 20.0, 20.4, 20.…
+$ mean_percent_open_space_access &lt;dbl&gt; 71.9, 21.2, 68.2, 47.8, 29.8, 41.9, 43.…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Descriptive Stats</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Write function to round numeric columns to two decimal places</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  round_numeric <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">%&gt;%</span> </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span><span class="fu">round</span>(.x, <span class="dv">2</span>)))</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Summarize stats by variable</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    desc_stats_parks <span class="ot">&lt;-</span> urban_parks_data <span class="sc">%&gt;%</span> </span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="fu">where</span>(is.numeric)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(variable) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarize</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>                <span class="at">median =</span> <span class="fu">median</span>(value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>                <span class="at">sd =</span> <span class="fu">sd</span>(value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>                <span class="at">Q1 =</span> <span class="fu">quantile</span>(value, <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>                <span class="at">Q3 =</span> <span class="fu">quantile</span>(value, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">round_numeric</span>()</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Print descriptive stats with flextable</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>      desc_stats_flex <span class="ot">&lt;-</span> <span class="fu">flextable</span>(desc_stats_parks) <span class="sc">%&gt;%</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>        <span class="fu">set_caption</span>(<span class="st">"Summarized Urban Parks Statistics"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>        <span class="fu">set_header_labels</span>(</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>          <span class="at">variable =</span> <span class="st">"Variable"</span>,</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>          <span class="at">mean =</span> <span class="st">"Mean"</span>,</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>          <span class="at">median =</span> <span class="st">"Median"</span>,</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>          <span class="at">sd =</span> <span class="st">"Standard Deviation"</span>,</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>          <span class="at">Q1 =</span> <span class="st">"1st Quartile (Q1)"</span>,</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>          <span class="at">Q3 =</span> <span class="st">"3rd Quartile (Q3)"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>        <span class="fu">autofit</span>()</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Find Top/Bottom cities for percent parkland</span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select relevant columns</span></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    simplified_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"city_name"</span>, <span class="st">"city_pop"</span>, <span class="st">"revised_area"</span>, <span class="st">"pop_density"</span>, <span class="st">"parkland_area"</span>, <span class="st">"dn_area_ratio"</span>, <span class="st">"parkland_percent"</span>, <span class="st">"parkland_per_1k_pop"</span>, <span class="st">"percent_half_mile_walk"</span>)</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter top/bottom 10 cities</span></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>  top10_park_percent <span class="ot">&lt;-</span> urban_parks_data <span class="sc">%&gt;%</span> </span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(parkland_percent)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">all_of</span>(simplified_vars)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round_numeric</span>()</span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>  bottom10_park_percent <span class="ot">&lt;-</span> urban_parks_data <span class="sc">%&gt;%</span> </span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(parkland_percent) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">all_of</span>(simplified_vars)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round_numeric</span>()</span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create top/bottom 10 flextables w/ function</span></span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create function</span></span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>  make_best_worst_flextbl <span class="ot">&lt;-</span><span class="cf">function</span>(df, caption) {</span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">flextable</span>(df) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_caption</span>(caption) <span class="sc">%&gt;%</span></span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_header_labels</span>(</span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">city_name =</span> <span class="st">"City Name"</span>,</span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>      <span class="at">city_pop =</span> <span class="st">"City Population"</span>,</span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a>      <span class="at">revised_area =</span> <span class="st">"City Land Area (Revised) (Acres)"</span>,</span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>      <span class="at">pop_density =</span> <span class="st">"Population Density (People/Acre)"</span>,</span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>      <span class="at">parkland_area =</span> <span class="st">"City Parkland Area (Acres)"</span>,</span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>      <span class="at">parkland_percent =</span> <span class="st">"Percent Parkland"</span>,</span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>      <span class="at">parkland_per_1k_pop =</span> <span class="st">"Parkland Per (1000) Capita"</span>,</span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>      <span class="at">percent_half_mile_walk =</span> <span class="st">"Percent of Residents within 0.5 Miles of a Park"</span>,</span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>      <span class="at">dn_area_ratio =</span> <span class="st">"Designed-Natural Park Area Ratio (Designed Park (%) / Natural Park (%)"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>    <span class="fu">autofit</span>()</span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a>  top10_park_percent_flex <span class="ot">&lt;-</span> <span class="fu">make_best_worst_flextbl</span>(top10_park_percent, <span class="st">"Top 10 Cities for Parkland Percentage"</span>)</span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>  bottom10_park_percent_flex <span class="ot">&lt;-</span> <span class="fu">make_best_worst_flextbl</span>(bottom10_park_percent, <span class="st">"Top 10 Cities for Parkland Percentage"</span>)</span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a><span class="co"># Make plots to visualize the data</span></span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram: Land Area</span></span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a>land_area_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(urban_parks_data, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.numeric</span>(land_area))) <span class="sc">+</span></span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Land Area (Acres)"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>, <span class="at">title =</span> <span class="st">"Distribution of City Land Areas"</span>) <span class="sc">+</span></span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatterplot: Land Area vs Parkland Area</span></span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a>land_vs_park_area_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(urban_parks_data, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.numeric</span>(land_area), <span class="at">y =</span> parkland_area)) <span class="sc">+</span></span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"forestgreen"</span>) <span class="sc">+</span></span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Land Area (Acres)"</span>, <span class="at">y =</span> <span class="st">"Parkland Area</span><span class="sc">\n</span><span class="st">(Acres)"</span>, <span class="at">title =</span> <span class="st">"Land Area vs Parkland Area"</span>) <span class="sc">+</span></span>
+<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span></span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span></span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatterplot: Population Density vs Parkland Percent</span></span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a>density_vs_park_percent_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(urban_parks_data, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.numeric</span>(pop_density), <span class="at">y =</span> parkland_percent)) <span class="sc">+</span></span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"darkorange"</span>) <span class="sc">+</span></span>
+<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Population Density (People/Acre)"</span>, <span class="at">y =</span> <span class="st">"Percent Parkland"</span>, <span class="at">title =</span> <span class="st">"Population Density vs</span><span class="sc">\n</span><span class="st">Parkland Percent"</span>) <span class="sc">+</span></span>
+<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span></span>
+<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span></span>
+<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatterplot: Designed-Natural Park Area Ratio vs Parkland Percent</span></span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a>dn_area_ratio_vs_park_percent_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(urban_parks_data, <span class="fu">aes</span>(<span class="at">x =</span> dn_area_ratio, <span class="at">y =</span> parkland_percent)) <span class="sc">+</span></span>
+<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"mediumvioletred"</span>) <span class="sc">+</span></span>
+<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Designed-Natural Park Area Ratio"</span>, <span class="at">y =</span> <span class="st">"Percent Parkland"</span>, <span class="at">title =</span> <span class="st">"Designed-Natural Park Area</span><span class="sc">\n</span><span class="st">Ratio vs Parkland Percent"</span>) <span class="sc">+</span></span>
+<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span></span>
+<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span></span>
+<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatterplot: Percent Designed Parks vs Percent Natural Parks</span></span>
+<span id="cb16-105"><a href="#cb16-105" aria-hidden="true" tabindex="-1"></a>designed_vs_natural_parks_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(urban_parks_data, <span class="fu">aes</span>(<span class="at">x =</span> percent_designed_parks, <span class="at">y =</span> percent_natural_parks)) <span class="sc">+</span></span>
+<span id="cb16-106"><a href="#cb16-106" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"cadetblue"</span>) <span class="sc">+</span></span>
+<span id="cb16-107"><a href="#cb16-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Percent Designed Parks"</span>, <span class="at">y =</span> <span class="st">"Percent Natural</span><span class="sc">\n</span><span class="st">Parks"</span>, <span class="at">title =</span> <span class="st">"Percent Designed vs Natural Parks"</span>) <span class="sc">+</span></span>
+<span id="cb16-108"><a href="#cb16-108" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatterplot: Percent Open Space Access vs Percent Built Open Space</span></span>
+<span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a>open_space_access_vs_built_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(urban_parks_data, <span class="fu">aes</span>(<span class="at">x =</span> mean_percent_open_space_access, <span class="at">y =</span> mean_percent_built_open_space)) <span class="sc">+</span></span>
+<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"seagreen"</span>) <span class="sc">+</span></span>
+<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Mean % Open Space Access"</span>, <span class="at">y =</span> <span class="st">"Mean % Built</span><span class="sc">\n</span><span class="st">Open Space"</span>, <span class="at">title =</span> <span class="st">"Accessibility of Built Open Space"</span>) <span class="sc">+</span></span>
+<span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine all plots in one figure using patchwork (optional)</span></span>
+<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a>all_eda_plots <span class="ot">&lt;-</span> (land_area_plot <span class="sc">|</span> land_vs_park_area_plot) <span class="sc">/</span> </span>
+<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a>  (density_vs_park_percent_plot <span class="sc">|</span> dn_area_ratio_vs_park_percent_plot) <span class="sc">/</span> </span>
+<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a>  (designed_vs_natural_parks_plot<span class="sc">|</span> open_space_access_vs_built_plot) <span class="sc">+</span></span>
+<span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">guides =</span> <span class="st">"collect"</span>)</span>
+<span id="cb16-121"><a href="#cb16-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-122"><a href="#cb16-122" aria-hidden="true" tabindex="-1"></a><span class="co"># Display data summary and visualization</span></span>
+<span id="cb16-123"><a href="#cb16-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-124"><a href="#cb16-124" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Display flextables</span></span>
+<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a>  desc_stats_flex</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-d707e8b6{}.cl-d6fb53e4{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d7001a32{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d7001a78{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d7004e08{width:2.74in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e12{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e1c{width:1.05in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e26{width:1.585in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e27{width:1.414in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e30{width:1.431in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e3a{width:2.74in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e3b{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e44{width:1.05in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e45{width:1.585in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e46{width:1.414in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e4e{width:1.431in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e4f{width:2.74in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e58{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e59{width:1.05in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e62{width:1.585in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e6c{width:1.414in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e6d{width:1.431in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e6e{width:2.74in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e76{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e77{width:1.05in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e78{width:1.585in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e80{width:1.414in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e81{width:1.431in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e8a{width:2.74in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e8b{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e8c{width:1.05in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e94{width:1.585in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e95{width:1.414in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e9e{width:1.431in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004e9f{width:2.74in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004ea8{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004ea9{width:1.05in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004eb2{width:1.585in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004eb3{width:1.414in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004ebc{width:1.431in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004ebd{width:2.74in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004ec6{width:1.177in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004ec7{width:1.05in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004ec8{width:1.585in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004ed0{width:1.414in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7004ed1{width:1.431in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-d707e8b6"><thead><tr style="overflow-wrap:break-word;"><th class="cl-d7004e08"><p class="cl-d7001a32"><span class="cl-d6fb53e4">Variable</span></p></th><th class="cl-d7004e12"><p class="cl-d7001a78"><span class="cl-d6fb53e4">Mean</span></p></th><th class="cl-d7004e1c"><p class="cl-d7001a78"><span class="cl-d6fb53e4">Median</span></p></th><th class="cl-d7004e26"><p class="cl-d7001a78"><span class="cl-d6fb53e4">Standard Deviation</span></p></th><th class="cl-d7004e27"><p class="cl-d7001a78"><span class="cl-d6fb53e4">1st Quartile (Q1)</span></p></th><th class="cl-d7004e30"><p class="cl-d7001a78"><span class="cl-d6fb53e4">3rd Quartile (Q3)</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d7004e3a"><p class="cl-d7001a32"><span class="cl-d6fb53e4">city_pop</span></p></td><td class="cl-d7004e3b"><p class="cl-d7001a78"><span class="cl-d6fb53e4">1,113,559.56</span></p></td><td class="cl-d7004e44"><p class="cl-d7001a78"><span class="cl-d6fb53e4">655,061.00</span></p></td><td class="cl-d7004e45"><p class="cl-d7001a78"><span class="cl-d6fb53e4">1,696,534.55</span></p></td><td class="cl-d7004e46"><p class="cl-d7001a78"><span class="cl-d6fb53e4">377,963.00</span></p></td><td class="cl-d7004e4e"><p class="cl-d7001a78"><span class="cl-d6fb53e4">1,006,142.00</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e3a"><p class="cl-d7001a32"><span class="cl-d6fb53e4">designed_park_area</span></p></td><td class="cl-d7004e3b"><p class="cl-d7001a78"><span class="cl-d6fb53e4">5,559.20</span></p></td><td class="cl-d7004e44"><p class="cl-d7001a78"><span class="cl-d6fb53e4">3,864.00</span></p></td><td class="cl-d7004e45"><p class="cl-d7001a78"><span class="cl-d6fb53e4">5,020.97</span></p></td><td class="cl-d7004e46"><p class="cl-d7001a78"><span class="cl-d6fb53e4">2,652.00</span></p></td><td class="cl-d7004e4e"><p class="cl-d7001a78"><span class="cl-d6fb53e4">5,785.00</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e4f"><p class="cl-d7001a32"><span class="cl-d6fb53e4">dn_area_ratio</span></p></td><td class="cl-d7004e58"><p class="cl-d7001a78"><span class="cl-d6fb53e4">2.42</span></p></td><td class="cl-d7004e59"><p class="cl-d7001a78"><span class="cl-d6fb53e4">1.02</span></p></td><td class="cl-d7004e62"><p class="cl-d7001a78"><span class="cl-d6fb53e4">4.90</span></p></td><td class="cl-d7004e6c"><p class="cl-d7001a78"><span class="cl-d6fb53e4">0.26</span></p></td><td class="cl-d7004e6d"><p class="cl-d7001a78"><span class="cl-d6fb53e4">1.56</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e4f"><p class="cl-d7001a32"><span class="cl-d6fb53e4">land_area</span></p></td><td class="cl-d7004e58"><p class="cl-d7001a78"><span class="cl-d6fb53e4">178,285.40</span></p></td><td class="cl-d7004e59"><p class="cl-d7001a78"><span class="cl-d6fb53e4">88,800.00</span></p></td><td class="cl-d7004e62"><p class="cl-d7001a78"><span class="cl-d6fb53e4">224,466.29</span></p></td><td class="cl-d7004e6c"><p class="cl-d7001a78"><span class="cl-d6fb53e4">53,723.00</span></p></td><td class="cl-d7004e6d"><p class="cl-d7001a78"><span class="cl-d6fb53e4">201,635.00</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e4f"><p class="cl-d7001a32"><span class="cl-d6fb53e4">mean_percent_built_open_space</span></p></td><td class="cl-d7004e58"><p class="cl-d7001a78"><span class="cl-d6fb53e4">18.71</span></p></td><td class="cl-d7004e59"><p class="cl-d7001a78"><span class="cl-d6fb53e4">18.20</span></p></td><td class="cl-d7004e62"><p class="cl-d7001a78"><span class="cl-d6fb53e4">3.23</span></p></td><td class="cl-d7004e6c"><p class="cl-d7001a78"><span class="cl-d6fb53e4">17.20</span></p></td><td class="cl-d7004e6d"><p class="cl-d7001a78"><span class="cl-d6fb53e4">20.60</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e6e"><p class="cl-d7001a32"><span class="cl-d6fb53e4">mean_percent_open_space_access</span></p></td><td class="cl-d7004e76"><p class="cl-d7001a78"><span class="cl-d6fb53e4">42.06</span></p></td><td class="cl-d7004e77"><p class="cl-d7001a78"><span class="cl-d6fb53e4">40.00</span></p></td><td class="cl-d7004e78"><p class="cl-d7001a78"><span class="cl-d6fb53e4">17.04</span></p></td><td class="cl-d7004e80"><p class="cl-d7001a78"><span class="cl-d6fb53e4">29.80</span></p></td><td class="cl-d7004e81"><p class="cl-d7001a78"><span class="cl-d6fb53e4">52.80</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e4f"><p class="cl-d7001a32"><span class="cl-d6fb53e4">natural_park_area</span></p></td><td class="cl-d7004e58"><p class="cl-d7001a78"><span class="cl-d6fb53e4">48,113.72</span></p></td><td class="cl-d7004e59"><p class="cl-d7001a78"><span class="cl-d6fb53e4">4,538.00</span></p></td><td class="cl-d7004e62"><p class="cl-d7001a78"><span class="cl-d6fb53e4">180,621.84</span></p></td><td class="cl-d7004e6c"><p class="cl-d7001a78"><span class="cl-d6fb53e4">1,429.00</span></p></td><td class="cl-d7004e6d"><p class="cl-d7001a78"><span class="cl-d6fb53e4">22,527.00</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e4f"><p class="cl-d7001a32"><span class="cl-d6fb53e4">park_units</span></p></td><td class="cl-d7004e58"><p class="cl-d7001a78"><span class="cl-d6fb53e4">460.80</span></p></td><td class="cl-d7004e59"><p class="cl-d7001a78"><span class="cl-d6fb53e4">302.00</span></p></td><td class="cl-d7004e62"><p class="cl-d7001a78"><span class="cl-d6fb53e4">811.06</span></p></td><td class="cl-d7004e6c"><p class="cl-d7001a78"><span class="cl-d6fb53e4">179.00</span></p></td><td class="cl-d7004e6d"><p class="cl-d7001a78"><span class="cl-d6fb53e4">416.00</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e8a"><p class="cl-d7001a32"><span class="cl-d6fb53e4">park_units_per_10k_pop</span></p></td><td class="cl-d7004e8b"><p class="cl-d7001a78"><span class="cl-d6fb53e4">4.55</span></p></td><td class="cl-d7004e8c"><p class="cl-d7001a78"><span class="cl-d6fb53e4">4.54</span></p></td><td class="cl-d7004e94"><p class="cl-d7001a78"><span class="cl-d6fb53e4">1.72</span></p></td><td class="cl-d7004e95"><p class="cl-d7001a78"><span class="cl-d6fb53e4">3.28</span></p></td><td class="cl-d7004e9e"><p class="cl-d7001a78"><span class="cl-d6fb53e4">5.42</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e4f"><p class="cl-d7001a32"><span class="cl-d6fb53e4">parkland_area</span></p></td><td class="cl-d7004e58"><p class="cl-d7001a78"><span class="cl-d6fb53e4">53,824.36</span></p></td><td class="cl-d7004e59"><p class="cl-d7001a78"><span class="cl-d6fb53e4">9,478.00</span></p></td><td class="cl-d7004e62"><p class="cl-d7001a78"><span class="cl-d6fb53e4">180,158.96</span></p></td><td class="cl-d7004e6c"><p class="cl-d7001a78"><span class="cl-d6fb53e4">5,075.00</span></p></td><td class="cl-d7004e6d"><p class="cl-d7001a78"><span class="cl-d6fb53e4">28,312.00</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e8a"><p class="cl-d7001a32"><span class="cl-d6fb53e4">parkland_per_1k_pop</span></p></td><td class="cl-d7004e8b"><p class="cl-d7001a78"><span class="cl-d6fb53e4">143.17</span></p></td><td class="cl-d7004e8c"><p class="cl-d7001a78"><span class="cl-d6fb53e4">12.09</span></p></td><td class="cl-d7004e94"><p class="cl-d7001a78"><span class="cl-d6fb53e4">607.26</span></p></td><td class="cl-d7004e95"><p class="cl-d7001a78"><span class="cl-d6fb53e4">9.15</span></p></td><td class="cl-d7004e9e"><p class="cl-d7001a78"><span class="cl-d6fb53e4">28.14</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e4f"><p class="cl-d7001a32"><span class="cl-d6fb53e4">parkland_percent</span></p></td><td class="cl-d7004e58"><p class="cl-d7001a78"><span class="cl-d6fb53e4">15.31</span></p></td><td class="cl-d7004e59"><p class="cl-d7001a78"><span class="cl-d6fb53e4">12.54</span></p></td><td class="cl-d7004e62"><p class="cl-d7001a78"><span class="cl-d6fb53e4">15.58</span></p></td><td class="cl-d7004e6c"><p class="cl-d7001a78"><span class="cl-d6fb53e4">6.76</span></p></td><td class="cl-d7004e6d"><p class="cl-d7001a78"><span class="cl-d6fb53e4">17.38</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e3a"><p class="cl-d7001a32"><span class="cl-d6fb53e4">percent_designed_parks</span></p></td><td class="cl-d7004e3b"><p class="cl-d7001a78"><span class="cl-d6fb53e4">44.66</span></p></td><td class="cl-d7004e44"><p class="cl-d7001a78"><span class="cl-d6fb53e4">50.28</span></p></td><td class="cl-d7004e45"><p class="cl-d7001a78"><span class="cl-d6fb53e4">27.85</span></p></td><td class="cl-d7004e46"><p class="cl-d7001a78"><span class="cl-d6fb53e4">20.43</span></p></td><td class="cl-d7004e4e"><p class="cl-d7001a78"><span class="cl-d6fb53e4">60.90</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e9f"><p class="cl-d7001a32"><span class="cl-d6fb53e4">percent_half_mile_walk</span></p></td><td class="cl-d7004ea8"><p class="cl-d7001a78"><span class="cl-d6fb53e4">0.76</span></p></td><td class="cl-d7004ea9"><p class="cl-d7001a78"><span class="cl-d6fb53e4">0.80</span></p></td><td class="cl-d7004eb2"><p class="cl-d7001a78"><span class="cl-d6fb53e4">0.20</span></p></td><td class="cl-d7004eb3"><p class="cl-d7001a78"><span class="cl-d6fb53e4">0.63</span></p></td><td class="cl-d7004ebc"><p class="cl-d7001a78"><span class="cl-d6fb53e4">0.96</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e4f"><p class="cl-d7001a32"><span class="cl-d6fb53e4">percent_natural_parks</span></p></td><td class="cl-d7004e58"><p class="cl-d7001a78"><span class="cl-d6fb53e4">53.78</span></p></td><td class="cl-d7004e59"><p class="cl-d7001a78"><span class="cl-d6fb53e4">49.61</span></p></td><td class="cl-d7004e62"><p class="cl-d7001a78"><span class="cl-d6fb53e4">28.29</span></p></td><td class="cl-d7004e6c"><p class="cl-d7001a78"><span class="cl-d6fb53e4">32.55</span></p></td><td class="cl-d7004e6d"><p class="cl-d7001a78"><span class="cl-d6fb53e4">79.57</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004e3a"><p class="cl-d7001a32"><span class="cl-d6fb53e4">pop_density</span></p></td><td class="cl-d7004e3b"><p class="cl-d7001a78"><span class="cl-d6fb53e4">9.52</span></p></td><td class="cl-d7004e44"><p class="cl-d7001a78"><span class="cl-d6fb53e4">6.39</span></p></td><td class="cl-d7004e45"><p class="cl-d7001a78"><span class="cl-d6fb53e4">9.84</span></p></td><td class="cl-d7004e46"><p class="cl-d7001a78"><span class="cl-d6fb53e4">3.59</span></p></td><td class="cl-d7004e4e"><p class="cl-d7001a78"><span class="cl-d6fb53e4">12.41</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7004ebd"><p class="cl-d7001a32"><span class="cl-d6fb53e4">revised_area</span></p></td><td class="cl-d7004ec6"><p class="cl-d7001a78"><span class="cl-d6fb53e4">175,389.60</span></p></td><td class="cl-d7004ec7"><p class="cl-d7001a78"><span class="cl-d6fb53e4">87,844.00</span></p></td><td class="cl-d7004ec8"><p class="cl-d7001a78"><span class="cl-d6fb53e4">222,631.64</span></p></td><td class="cl-d7004ed0"><p class="cl-d7001a78"><span class="cl-d6fb53e4">52,765.00</span></p></td><td class="cl-d7004ed1"><p class="cl-d7001a78"><span class="cl-d6fb53e4">196,098.00</span></p></td></tr></tbody></table></div>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>  top10_park_percent_flex</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-d71cbe08{}.cl-d70fb294{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d7142b30{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d7142b3a{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d715556e{width:1.559in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155578{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155582{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155583{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715558c{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715558d{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715558e{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155596{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155597{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555a0{width:1.559in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555a1{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555a2{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555aa{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555ab{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555ac{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555ad{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555b4{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555b5{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555b6{width:1.559in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555be{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555bf{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555c0{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555c8{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555c9{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555d2{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555d3{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555d4{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555dc{width:1.559in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555dd{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555de{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555e6{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555e7{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555e8{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555f0{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555f1{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555f2{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555fa{width:1.559in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555fb{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d71555fc{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155604{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155605{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155606{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715560e{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715560f{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155610{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155618{width:1.559in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155619{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715561a{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155622{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155623{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715562c{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715562d{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715562e{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715562f{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155636{width:1.559in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155637{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155638{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155640{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155641{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715564a{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715564b{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d715564c{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7155654{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-d71cbe08"><thead><tr style="overflow-wrap:break-word;"><th class="cl-d715556e"><p class="cl-d7142b30"><span class="cl-d70fb294">City Name</span></p></th><th class="cl-d7155578"><p class="cl-d7142b3a"><span class="cl-d70fb294">City Population</span></p></th><th class="cl-d7155582"><p class="cl-d7142b3a"><span class="cl-d70fb294">City Land Area (Revised) (Acres)</span></p></th><th class="cl-d7155583"><p class="cl-d7142b3a"><span class="cl-d70fb294">Population Density (People/Acre)</span></p></th><th class="cl-d715558c"><p class="cl-d7142b3a"><span class="cl-d70fb294">City Parkland Area (Acres)</span></p></th><th class="cl-d715558d"><p class="cl-d7142b3a"><span class="cl-d70fb294">Designed-Natural Park Area Ratio (Designed Park (%) / Natural Park (%)</span></p></th><th class="cl-d715558e"><p class="cl-d7142b3a"><span class="cl-d70fb294">Percent Parkland</span></p></th><th class="cl-d7155596"><p class="cl-d7142b3a"><span class="cl-d70fb294">Parkland Per (1000) Capita</span></p></th><th class="cl-d7155597"><p class="cl-d7142b3a"><span class="cl-d70fb294">Percent of Residents within 0.5 Miles of a Park</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d71555a0"><p class="cl-d7142b30"><span class="cl-d70fb294">Anchorage, AK</span></p></td><td class="cl-d71555a1"><p class="cl-d7142b3a"><span class="cl-d70fb294">299,100</span></p></td><td class="cl-d71555a2"><p class="cl-d7142b3a"><span class="cl-d70fb294">1,086,019</span></p></td><td class="cl-d71555aa"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.28</span></p></td><td class="cl-d71555ab"><p class="cl-d7142b3a"><span class="cl-d70fb294">914,138</span></p></td><td class="cl-d71555ac"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.00</span></p></td><td class="cl-d71555ad"><p class="cl-d7142b3a"><span class="cl-d70fb294">84.17</span></p></td><td class="cl-d71555b4"><p class="cl-d7142b3a"><span class="cl-d70fb294">3,056.30</span></p></td><td class="cl-d71555b5"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.75</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d71555b6"><p class="cl-d7142b30"><span class="cl-d70fb294">New Orleans, LA</span></p></td><td class="cl-d71555be"><p class="cl-d7142b3a"><span class="cl-d70fb294">386,105</span></p></td><td class="cl-d71555bf"><p class="cl-d7142b3a"><span class="cl-d70fb294">107,655</span></p></td><td class="cl-d71555c0"><p class="cl-d7142b3a"><span class="cl-d70fb294">3.59</span></p></td><td class="cl-d71555c8"><p class="cl-d7142b3a"><span class="cl-d70fb294">27,775</span></p></td><td class="cl-d71555c9"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.11</span></p></td><td class="cl-d71555d2"><p class="cl-d7142b3a"><span class="cl-d70fb294">25.80</span></p></td><td class="cl-d71555d3"><p class="cl-d7142b3a"><span class="cl-d70fb294">71.94</span></p></td><td class="cl-d71555d4"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.80</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d71555dc"><p class="cl-d7142b30"><span class="cl-d70fb294">Washington, DC</span></p></td><td class="cl-d71555dd"><p class="cl-d7142b3a"><span class="cl-d70fb294">702,321</span></p></td><td class="cl-d71555de"><p class="cl-d7142b3a"><span class="cl-d70fb294">38,955</span></p></td><td class="cl-d71555e6"><p class="cl-d7142b3a"><span class="cl-d70fb294">18.03</span></p></td><td class="cl-d71555e7"><p class="cl-d7142b3a"><span class="cl-d70fb294">9,478</span></p></td><td class="cl-d71555e8"><p class="cl-d7142b3a"><span class="cl-d70fb294">1.09</span></p></td><td class="cl-d71555f0"><p class="cl-d7142b3a"><span class="cl-d70fb294">24.33</span></p></td><td class="cl-d71555f1"><p class="cl-d7142b3a"><span class="cl-d70fb294">13.50</span></p></td><td class="cl-d71555f2"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.98</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d71555fa"><p class="cl-d7142b30"><span class="cl-d70fb294">New York, NY</span></p></td><td class="cl-d71555fb"><p class="cl-d7142b3a"><span class="cl-d70fb294">8,627,852</span></p></td><td class="cl-d71555fc"><p class="cl-d7142b3a"><span class="cl-d70fb294">187,946</span></p></td><td class="cl-d7155604"><p class="cl-d7142b3a"><span class="cl-d70fb294">45.91</span></p></td><td class="cl-d7155605"><p class="cl-d7142b3a"><span class="cl-d70fb294">40,190</span></p></td><td class="cl-d7155606"><p class="cl-d7142b3a"><span class="cl-d70fb294">1.01</span></p></td><td class="cl-d715560e"><p class="cl-d7142b3a"><span class="cl-d70fb294">21.38</span></p></td><td class="cl-d715560f"><p class="cl-d7142b3a"><span class="cl-d70fb294">4.66</span></p></td><td class="cl-d7155610"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.99</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d71555dc"><p class="cl-d7142b30"><span class="cl-d70fb294">San Diego, CA</span></p></td><td class="cl-d71555dd"><p class="cl-d7142b3a"><span class="cl-d70fb294">1,399,844</span></p></td><td class="cl-d71555de"><p class="cl-d7142b3a"><span class="cl-d70fb294">205,918</span></p></td><td class="cl-d71555e6"><p class="cl-d7142b3a"><span class="cl-d70fb294">6.80</span></p></td><td class="cl-d71555e7"><p class="cl-d7142b3a"><span class="cl-d70fb294">39,385</span></p></td><td class="cl-d71555e8"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.29</span></p></td><td class="cl-d71555f0"><p class="cl-d7142b3a"><span class="cl-d70fb294">19.13</span></p></td><td class="cl-d71555f1"><p class="cl-d7142b3a"><span class="cl-d70fb294">28.14</span></p></td><td class="cl-d71555f2"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.81</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d71555a0"><p class="cl-d7142b30"><span class="cl-d70fb294">Virginia Beach, VA</span></p></td><td class="cl-d71555a1"><p class="cl-d7142b3a"><span class="cl-d70fb294">457,832</span></p></td><td class="cl-d71555a2"><p class="cl-d7142b3a"><span class="cl-d70fb294">159,341</span></p></td><td class="cl-d71555aa"><p class="cl-d7142b3a"><span class="cl-d70fb294">2.87</span></p></td><td class="cl-d71555ab"><p class="cl-d7142b3a"><span class="cl-d70fb294">28,312</span></p></td><td class="cl-d71555ac"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.26</span></p></td><td class="cl-d71555ad"><p class="cl-d7142b3a"><span class="cl-d70fb294">17.77</span></p></td><td class="cl-d71555b4"><p class="cl-d7142b3a"><span class="cl-d70fb294">61.84</span></p></td><td class="cl-d71555b5"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.68</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d71555fa"><p class="cl-d7142b30"><span class="cl-d70fb294">Boston, MA</span></p></td><td class="cl-d71555fb"><p class="cl-d7142b3a"><span class="cl-d70fb294">687,725</span></p></td><td class="cl-d71555fc"><p class="cl-d7142b3a"><span class="cl-d70fb294">29,175</span></p></td><td class="cl-d7155604"><p class="cl-d7142b3a"><span class="cl-d70fb294">23.57</span></p></td><td class="cl-d7155605"><p class="cl-d7142b3a"><span class="cl-d70fb294">5,072</span></p></td><td class="cl-d7155606"><p class="cl-d7142b3a"><span class="cl-d70fb294">1.02</span></p></td><td class="cl-d715560e"><p class="cl-d7142b3a"><span class="cl-d70fb294">17.38</span></p></td><td class="cl-d715560f"><p class="cl-d7142b3a"><span class="cl-d70fb294">7.38</span></p></td><td class="cl-d7155610"><p class="cl-d7142b3a"><span class="cl-d70fb294">1.00</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d71555fa"><p class="cl-d7142b30"><span class="cl-d70fb294">Honolulu, HI</span></p></td><td class="cl-d71555fb"><p class="cl-d7142b3a"><span class="cl-d70fb294">1,006,142</span></p></td><td class="cl-d71555fc"><p class="cl-d7142b3a"><span class="cl-d70fb294">379,885</span></p></td><td class="cl-d7155604"><p class="cl-d7142b3a"><span class="cl-d70fb294">2.65</span></p></td><td class="cl-d7155605"><p class="cl-d7142b3a"><span class="cl-d70fb294">57,141</span></p></td><td class="cl-d7155606"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.09</span></p></td><td class="cl-d715560e"><p class="cl-d7142b3a"><span class="cl-d70fb294">15.04</span></p></td><td class="cl-d715560f"><p class="cl-d7142b3a"><span class="cl-d70fb294">56.79</span></p></td><td class="cl-d7155610"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.79</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7155618"><p class="cl-d7142b30"><span class="cl-d70fb294">Minneapolis, MN</span></p></td><td class="cl-d7155619"><p class="cl-d7142b3a"><span class="cl-d70fb294">421,339</span></p></td><td class="cl-d715561a"><p class="cl-d7142b3a"><span class="cl-d70fb294">33,958</span></p></td><td class="cl-d7155622"><p class="cl-d7142b3a"><span class="cl-d70fb294">12.41</span></p></td><td class="cl-d7155623"><p class="cl-d7142b3a"><span class="cl-d70fb294">5,075</span></p></td><td class="cl-d715562c"><p class="cl-d7142b3a"><span class="cl-d70fb294">8.47</span></p></td><td class="cl-d715562d"><p class="cl-d7142b3a"><span class="cl-d70fb294">14.94</span></p></td><td class="cl-d715562e"><p class="cl-d7142b3a"><span class="cl-d70fb294">12.04</span></p></td><td class="cl-d715562f"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.98</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7155636"><p class="cl-d7142b30"><span class="cl-d70fb294">Jacksonville, FL</span></p></td><td class="cl-d7155637"><p class="cl-d7142b3a"><span class="cl-d70fb294">925,142</span></p></td><td class="cl-d7155638"><p class="cl-d7142b3a"><span class="cl-d70fb294">467,298</span></p></td><td class="cl-d7155640"><p class="cl-d7142b3a"><span class="cl-d70fb294">1.98</span></p></td><td class="cl-d7155641"><p class="cl-d7142b3a"><span class="cl-d70fb294">67,707</span></p></td><td class="cl-d715564a"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.14</span></p></td><td class="cl-d715564b"><p class="cl-d7142b3a"><span class="cl-d70fb294">14.49</span></p></td><td class="cl-d715564c"><p class="cl-d7142b3a"><span class="cl-d70fb294">73.19</span></p></td><td class="cl-d7155654"><p class="cl-d7142b3a"><span class="cl-d70fb294">0.35</span></p></td></tr></tbody></table></div>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>  bottom10_park_percent_flex </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-d72f5842{}.cl-d7237a72{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d727da04{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d727da18{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d728079a{width:1.627in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807a4{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807a5{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807ae{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807af{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807b8{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807b9{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807ba{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807c2{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807c3{width:1.627in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807cc{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807d6{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807d7{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807e0{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807e1{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807e2{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807ea{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807eb{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807f4{width:1.627in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807f5{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807fe{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d72807ff{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280800{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280808{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280809{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d728080a{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280812{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280813{width:1.627in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280814{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d728081c{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d728081d{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280826{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280827{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280828{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280829{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280830{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280831{width:1.627in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d728083a{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d728083b{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280844{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280845{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d728084e{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d728084f{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280850{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280858{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280859{width:1.627in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280862{width:1.313in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280863{width:2.527in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d728086c{width:2.536in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d728086d{width:2.094in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280876{width:5.227in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280877{width:1.457in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280880{width:2.136in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d7280881{width:3.444in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-d72f5842"><thead><tr style="overflow-wrap:break-word;"><th class="cl-d728079a"><p class="cl-d727da04"><span class="cl-d7237a72">City Name</span></p></th><th class="cl-d72807a4"><p class="cl-d727da18"><span class="cl-d7237a72">City Population</span></p></th><th class="cl-d72807a5"><p class="cl-d727da18"><span class="cl-d7237a72">City Land Area (Revised) (Acres)</span></p></th><th class="cl-d72807ae"><p class="cl-d727da18"><span class="cl-d7237a72">Population Density (People/Acre)</span></p></th><th class="cl-d72807af"><p class="cl-d727da18"><span class="cl-d7237a72">City Parkland Area (Acres)</span></p></th><th class="cl-d72807b8"><p class="cl-d727da18"><span class="cl-d7237a72">Designed-Natural Park Area Ratio (Designed Park (%) / Natural Park (%)</span></p></th><th class="cl-d72807b9"><p class="cl-d727da18"><span class="cl-d7237a72">Percent Parkland</span></p></th><th class="cl-d72807ba"><p class="cl-d727da18"><span class="cl-d7237a72">Parkland Per (1000) Capita</span></p></th><th class="cl-d72807c2"><p class="cl-d727da18"><span class="cl-d7237a72">Percent of Residents within 0.5 Miles of a Park</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d72807c3"><p class="cl-d727da04"><span class="cl-d7237a72">Durham, NC</span></p></td><td class="cl-d72807cc"><p class="cl-d727da18"><span class="cl-d7237a72">275,758</span></p></td><td class="cl-d72807d6"><p class="cl-d727da18"><span class="cl-d7237a72">68,678</span></p></td><td class="cl-d72807d7"><p class="cl-d727da18"><span class="cl-d7237a72">4.02</span></p></td><td class="cl-d72807e0"><p class="cl-d727da18"><span class="cl-d7237a72">2,665</span></p></td><td class="cl-d72807e1"><p class="cl-d727da18"><span class="cl-d7237a72">0.11</span></p></td><td class="cl-d72807e2"><p class="cl-d727da18"><span class="cl-d7237a72">3.88</span></p></td><td class="cl-d72807ea"><p class="cl-d727da18"><span class="cl-d7237a72">9.66</span></p></td><td class="cl-d72807eb"><p class="cl-d727da18"><span class="cl-d7237a72">0.51</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d72807f4"><p class="cl-d727da04"><span class="cl-d7237a72">Memphis, TN</span></p></td><td class="cl-d72807f5"><p class="cl-d727da18"><span class="cl-d7237a72">655,061</span></p></td><td class="cl-d72807fe"><p class="cl-d727da18"><span class="cl-d7237a72">196,098</span></p></td><td class="cl-d72807ff"><p class="cl-d727da18"><span class="cl-d7237a72">3.34</span></p></td><td class="cl-d7280800"><p class="cl-d727da18"><span class="cl-d7237a72">9,194</span></p></td><td class="cl-d7280808"><p class="cl-d727da18"><span class="cl-d7237a72">1.10</span></p></td><td class="cl-d7280809"><p class="cl-d727da18"><span class="cl-d7237a72">4.69</span></p></td><td class="cl-d728080a"><p class="cl-d727da18"><span class="cl-d7237a72">9.15</span></p></td><td class="cl-d7280812"><p class="cl-d727da18"><span class="cl-d7237a72">0.46</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d72807c3"><p class="cl-d727da04"><span class="cl-d7237a72">Winston-Salem, NC</span></p></td><td class="cl-d72807cc"><p class="cl-d727da18"><span class="cl-d7237a72">248,839</span></p></td><td class="cl-d72807d6"><p class="cl-d727da18"><span class="cl-d7237a72">83,917</span></p></td><td class="cl-d72807d7"><p class="cl-d727da18"><span class="cl-d7237a72">2.97</span></p></td><td class="cl-d72807e0"><p class="cl-d727da18"><span class="cl-d7237a72">4,263</span></p></td><td class="cl-d72807e1"><p class="cl-d727da18"><span class="cl-d7237a72">7.34</span></p></td><td class="cl-d72807e2"><p class="cl-d727da18"><span class="cl-d7237a72">5.08</span></p></td><td class="cl-d72807ea"><p class="cl-d727da18"><span class="cl-d7237a72">17.13</span></p></td><td class="cl-d72807eb"><p class="cl-d727da18"><span class="cl-d7237a72">0.37</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7280813"><p class="cl-d727da04"><span class="cl-d7237a72">Detroit, MI</span></p></td><td class="cl-d7280814"><p class="cl-d727da18"><span class="cl-d7237a72">660,960</span></p></td><td class="cl-d728081c"><p class="cl-d727da18"><span class="cl-d7237a72">87,844</span></p></td><td class="cl-d728081d"><p class="cl-d727da18"><span class="cl-d7237a72">7.52</span></p></td><td class="cl-d7280826"><p class="cl-d727da18"><span class="cl-d7237a72">5,102</span></p></td><td class="cl-d7280827"><p class="cl-d727da18"><span class="cl-d7237a72">3.63</span></p></td><td class="cl-d7280828"><p class="cl-d727da18"><span class="cl-d7237a72">5.81</span></p></td><td class="cl-d7280829"><p class="cl-d727da18"><span class="cl-d7237a72">7.72</span></p></td><td class="cl-d7280830"><p class="cl-d727da18"><span class="cl-d7237a72">0.80</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7280831"><p class="cl-d727da04"><span class="cl-d7237a72">Toledo, OH</span></p></td><td class="cl-d728083a"><p class="cl-d727da18"><span class="cl-d7237a72">277,467</span></p></td><td class="cl-d728083b"><p class="cl-d727da18"><span class="cl-d7237a72">51,169</span></p></td><td class="cl-d7280844"><p class="cl-d727da18"><span class="cl-d7237a72">5.42</span></p></td><td class="cl-d7280845"><p class="cl-d727da18"><span class="cl-d7237a72">3,175</span></p></td><td class="cl-d728084e"><p class="cl-d727da18"><span class="cl-d7237a72">1.41</span></p></td><td class="cl-d728084f"><p class="cl-d727da18"><span class="cl-d7237a72">6.20</span></p></td><td class="cl-d7280850"><p class="cl-d727da18"><span class="cl-d7237a72">11.44</span></p></td><td class="cl-d7280858"><p class="cl-d727da18"><span class="cl-d7237a72">0.81</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d72807c3"><p class="cl-d727da04"><span class="cl-d7237a72">Atlanta, GA</span></p></td><td class="cl-d72807cc"><p class="cl-d727da18"><span class="cl-d7237a72">498,059</span></p></td><td class="cl-d72807d6"><p class="cl-d727da18"><span class="cl-d7237a72">84,250</span></p></td><td class="cl-d72807d7"><p class="cl-d727da18"><span class="cl-d7237a72">5.91</span></p></td><td class="cl-d72807e0"><p class="cl-d727da18"><span class="cl-d7237a72">5,293</span></p></td><td class="cl-d72807e1"><p class="cl-d727da18"><span class="cl-d7237a72">2.70</span></p></td><td class="cl-d72807e2"><p class="cl-d727da18"><span class="cl-d7237a72">6.28</span></p></td><td class="cl-d72807ea"><p class="cl-d727da18"><span class="cl-d7237a72">10.63</span></p></td><td class="cl-d72807eb"><p class="cl-d727da18"><span class="cl-d7237a72">0.72</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7280831"><p class="cl-d727da04"><span class="cl-d7237a72">Cleveland, OH</span></p></td><td class="cl-d728083a"><p class="cl-d727da18"><span class="cl-d7237a72">377,963</span></p></td><td class="cl-d728083b"><p class="cl-d727da18"><span class="cl-d7237a72">46,880</span></p></td><td class="cl-d7280844"><p class="cl-d727da18"><span class="cl-d7237a72">8.06</span></p></td><td class="cl-d7280845"><p class="cl-d727da18"><span class="cl-d7237a72">3,170</span></p></td><td class="cl-d728084e"><p class="cl-d727da18"><span class="cl-d7237a72">1.30</span></p></td><td class="cl-d728084f"><p class="cl-d727da18"><span class="cl-d7237a72">6.76</span></p></td><td class="cl-d7280850"><p class="cl-d727da18"><span class="cl-d7237a72">8.39</span></p></td><td class="cl-d7280858"><p class="cl-d727da18"><span class="cl-d7237a72">0.83</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7280813"><p class="cl-d727da04"><span class="cl-d7237a72">Dallas, TX</span></p></td><td class="cl-d7280814"><p class="cl-d727da18"><span class="cl-d7237a72">1,378,903</span></p></td><td class="cl-d728081c"><p class="cl-d727da18"><span class="cl-d7237a72">215,676</span></p></td><td class="cl-d728081d"><p class="cl-d727da18"><span class="cl-d7237a72">6.39</span></p></td><td class="cl-d7280826"><p class="cl-d727da18"><span class="cl-d7237a72">20,352</span></p></td><td class="cl-d7280827"><p class="cl-d727da18"><span class="cl-d7237a72">1.17</span></p></td><td class="cl-d7280828"><p class="cl-d727da18"><span class="cl-d7237a72">9.44</span></p></td><td class="cl-d7280829"><p class="cl-d727da18"><span class="cl-d7237a72">14.76</span></p></td><td class="cl-d7280830"><p class="cl-d727da18"><span class="cl-d7237a72">0.71</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7280831"><p class="cl-d727da04"><span class="cl-d7237a72">St. Louis, MO</span></p></td><td class="cl-d728083a"><p class="cl-d727da18"><span class="cl-d7237a72">310,144</span></p></td><td class="cl-d728083b"><p class="cl-d727da18"><span class="cl-d7237a72">39,090</span></p></td><td class="cl-d7280844"><p class="cl-d727da18"><span class="cl-d7237a72">7.93</span></p></td><td class="cl-d7280845"><p class="cl-d727da18"><span class="cl-d7237a72">3,749</span></p></td><td class="cl-d728084e"><p class="cl-d727da18"><span class="cl-d7237a72">23.66</span></p></td><td class="cl-d728084f"><p class="cl-d727da18"><span class="cl-d7237a72">9.59</span></p></td><td class="cl-d7280850"><p class="cl-d727da18"><span class="cl-d7237a72">12.09</span></p></td><td class="cl-d7280858"><p class="cl-d727da18"><span class="cl-d7237a72">0.98</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d7280859"><p class="cl-d727da04"><span class="cl-d7237a72">Chicago, IL</span></p></td><td class="cl-d7280862"><p class="cl-d727da18"><span class="cl-d7237a72">2,744,859</span></p></td><td class="cl-d7280863"><p class="cl-d727da18"><span class="cl-d7237a72">136,796</span></p></td><td class="cl-d728086c"><p class="cl-d727da18"><span class="cl-d7237a72">20.07</span></p></td><td class="cl-d728086d"><p class="cl-d727da18"><span class="cl-d7237a72">13,609</span></p></td><td class="cl-d7280876"><p class="cl-d727da18"><span class="cl-d7237a72">1.94</span></p></td><td class="cl-d7280877"><p class="cl-d727da18"><span class="cl-d7237a72">9.95</span></p></td><td class="cl-d7280880"><p class="cl-d727da18"><span class="cl-d7237a72">4.74</span></p></td><td class="cl-d7280881"><p class="cl-d727da18"><span class="cl-d7237a72">0.98</span></p></td></tr></tbody></table></div>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Display patchwork plots</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  all_eda_plots</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="">
+<figure class="figure">
+<p class=""><a href="index_files/figure-html/Basic%20EDA-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="index_files/figure-html/Basic%20EDA-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div></div>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-beall2010urbanization" class="csl-entry" role="listitem">
+Beall, J., Guha-Khasnobis, B., &amp; Kanbur, R. (2010). <em>Urbanization and development: Multidisciplinary perspectives</em>. Oxford University Press.
+</div>
+<div id="ref-kohlhase2013new" class="csl-entry" role="listitem">
+Kohlhase, J. E. (2013). The new urban world 2050: Perspectives, prospects and problems. <em>Regional Science Policy &amp; Practice</em>, <em>5</em>(2), 153–166.
+</div>
+<div id="ref-may2000habitat" class="csl-entry" role="listitem">
+May, R., Rex, K., Bellini, L., Sadullah, S., Nishi, E., James, F., &amp; Mathangani, A. (2000). UN habitat indicators database: Evaluation as a source of the status of urban development problems and programs. <em>Cities</em>, <em>17</em>(3), 237–244.
+</div>
+<div id="ref-ratcliffe_redefining_2022" class="csl-entry" role="listitem">
+Ratcliffe, M. (2022). Redefining <span>Urban</span> <span>Areas</span> following the 2020 <span>Census</span>. In <em>Census.gov</em>. <a href="https://www.census.gov/newsroom/blogs/random-samplings/2022/12/redefining-urban-areas-following-2020-census.html">https://www.census.gov/newsroom/blogs/random-samplings/2022/12/redefining-urban-areas-following-2020-census.html</a>
+</div>
+<div id="ref-slack2020changing" class="csl-entry" role="listitem">
+Slack, T., &amp; Jensen, L. (2020). The changing demography of rural and small-town america. <em>Population Research and Policy Review</em>, <em>39</em>(5), 775–783.
+</div>
+</div>
+</section>
+</section>
+     </main>
+<!-- /main column -->  <script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"selector":".lightbox","descPosition":"bottom","closeEffect":"zoom","loop":false,"openEffect":"zoom"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script> 
+  
+</body></html>
