@@ -28,7 +28,7 @@ output:
 execute: 
   echo: true
 ---
-### NOTE: To render you need to type "quarto render ./index.qmd" into the terminal window.
+### NOTE: Rendering is currently broken, just save and push. I will work on it with Mike next week.
 
 # Urbanization, Density and Access to Public Parks in the United States
 
