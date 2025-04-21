@@ -1,5 +1,5 @@
 ---
-title: ESS 330 Final Project Report - Lab 9
+title: 'ESS 330 Final Project Report - Lab 9'
 authors:
   - name: Bella Conrad
     affiliation: Colorado State University
@@ -16,19 +16,11 @@ authors:
     roles: 
       - writing
     corresponding: false
-    
 bibliography: references.bib
-csl: ./apa.csl
-  
-output:
-  html_document:
-    output-dir: docs
-    github_pages: true
-    
-execute: 
-  echo: true
+csl: apa.csl
 ---
-### NOTE: To render you need to type "quarto render ./index.qmd" into the terminal window.
+
+### NOTE: Rendering is currently broken, just save and push. I will work on it with Mike next week.
 
 # Urbanization, Density and Access to Public Parks in the United States
 
@@ -249,8 +241,6 @@ all_eda_plots <- (land_area_plot | land_vs_park_area_plot) /
   
   # Display patchwork plots
   all_eda_plots
-  
-  # rachel test
 
 ```
 
