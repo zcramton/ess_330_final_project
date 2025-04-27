@@ -75,14 +75,27 @@ The cities found in only one dataset will be cut from the data to accommodate th
 <p> The data has already been discussed in general terms in the data overview section. There will be a readme file created to elaborate on the sources, formatting and manipulation required for each dataset before joining them into the urban_parks_data data frame. In general terms, prior to importing into RStudio, the .xml files the data came in were opened in MS Excel; the sheets were formatted to be converted to .csv files including condensing multiple worksheets of the ParkServe® data into a sinigle sheet for easier conversion to a .csv file. While some of the cleaning done in Excel could have been completed in RStudio, it was not efficient to do so. Using Excel was faster and more flexible for that use case. Similar reformatting was required with the UN data as the headers were unreasonably long by default. The readme that will be created for each (or both) files will include a more detailed summary of what each variable means.
 
 ```{r}
-#| label: Basic EDA
+#| label: Data and Library Setup
 
-library(tidyverse)
-library(here)
-library(flextable)
-library(patchwork)
-
-# Create some visualizations and descriptions of what data you have, where you got it, and how and if you need to clean and manipulate it for your project
+library(baguette)       # Model bagging methods for ensemble learning
+library(ggfortify)      # Autoplot support for time series, PCA, and more
+library(ggthemes)       # Extra themes and scales for ggplot2
+library(glue)           # String interpolation with embedded R expressions
+library(here)           # Simplifies file paths for project-based workflows
+library(parsnip)        # Unified interface to model functions (part of tidymodels)
+library(patchwork)      # Combine ggplot2 plots with intuitive syntax
+library(plotly)         # Interactive plots built on top of ggplot2 or base R
+library(powerjoin)      # Flexible joins that track and resolve conflicts
+library(recipes)        # Preprocessing pipelines for modeling (part of tidymodels)
+library(skimr)          # Quick summaries of data frames with descriptive stats
+library(tidymodels)     # Collection of packages for modeling and machine learning
+library(tidyverse)      # Core packages for data science: dplyr, ggplot2, readr, etc.
+library(tune)           # Tools for hyperparameter tuning (part of tidymodels)
+library(vip)            # Variable importance plots for many model types
+library(visdat)         # Visualize missing and data types in your dataset
+library(workflowsets)   # Manage and compare sets of modeling workflows
+library(xgboost)        # Fast, regularized gradient boosting machine
+library(yardstick)      # Metrics for evaluating model performance (part of tidymodels)
 
 # Import data from csvs and clean NAs
 parkserve_data <- read_csv(here("data", "clean_data/parkserve_summarized_facts_2020.csv")) %>% 
@@ -101,8 +114,6 @@ clean_parkserve_data <- parkserve_data %>%
     #New calculation for designed-natural area ratio
     dn_area_ratio = ifelse(percent_natural_parks == 0, NA, percent_designed_parks / percent_natural_parks)
   )
-
-  
   
 # Join data removing cities found in only one of the two datasets
 urban_parks_data <- clean_parkserve_data %>% 
@@ -110,6 +121,11 @@ urban_parks_data <- clean_parkserve_data %>%
 
 # Basic data structure exploration
 glimpse(urban_parks_data)
+```
+
+
+```{r}
+#| label: Basic EDA
 
 # Descriptive Stats
 
@@ -241,6 +257,212 @@ all_eda_plots <- (land_area_plot | land_vs_park_area_plot) /
   
   # Display patchwork plots
   all_eda_plots
+
+```
+## Modeling
+
+4.	Prep data and split it into training and testing datasets. Perform a 10-fold cross-validation on training data. 
+5.	Create a recipe.
+6.	Set up several models in regression mode. 
+7.	Create a workflow set including the previously written models and the recipe. 
+8.	Map function over workflow using workflow map.
+9.	Using the highest performing model, fit the data and augment. 
+10.	Plot and graph data to visually display test results.
+11. Explore using the model to predict values for cities included in only one document (if time allows).
+
+```{r Model Creation}
+# Set seed
+set.seed(567)
+
+# Generate data split
+up_split <- initial_split(urban_parks_data, prop = 0.8)   # up ~ urban_parks
+up_train <- training(up_split)
+up_test <- testing(up_split)
+
+# Cross validation folds
+up_10cv <- vfold_cv(up_train, v = 10)
+
+# Recipes
+
+  # Recipe for mean_percent_built_open_space
+  rec_bos <- recipe(DOTHIS:: Complete Recipe)
+  
+  # Recipe for mean_percent_open_space_access
+  rec_osa <- recipe(DOTHIS:: Complete Recipe)
+  
+  # Build recipe list
+  recipes <- list(built_os = rec_bos,    # Built Open Space
+                  os_access = rec_osa)   # Open Space Access
+
+# Define Models
+  
+  EX) xx_model <- model_func() %>% 
+        set_engine("model_eng") %>% 
+        set_mode("regression")
+  
+# Compile list of models
+models <- list(xx = xx_model, 
+               ...)
+
+# combine models and preproc (recipes) into a workflow set
+up_wf_set <- workflow_set(
+  preproc = recipes,
+  models = models) %>% 
+  workflow_map("fit_resamples", seed = 520, resamples = up_10cv)
+
+# Autoplot & Rank Results
+autoplot(up_wf_set)
+
+rank_results(up_wf_set, rank_metric = "rsq", select_best = TRUE)
+
+```
+
+```{r Evaluating Selected Model}
+# Fit selected model for each output w/ workflow
+  # Feature importance (vip::vip(fit)
+
+# Evaluate selected model
+predictions <- augment(DOTHIS::fit_wf_name, new_data = test) %>% 
+  mutate(diff = abs(observed - .pred))   # Compute |abs| differences
+
+metrics(predictions, truth = logC, estimate = .pred)
+
+# Visualize predictions vs actual values for both outputs (ideally one plot but could use patchwork)
+  # See in_class_demo.R for ggplot example
+
+```
+
+```{r Tuning Selected Model}
+# Define custom tuning function
+tune_model <- function(wf, resamples) {
+  
+  # Extract tunable parameters
+  dials <- extract_parameter_set_dials(wf)
+  
+  # Define search space with a grid
+  grid <- grid_space_filling(dials, size = 20)
+  
+  # Tune grid
+  model_params <- tune_grid(
+    wf,
+    resamples = resamples,
+    grid = grid,
+    metrics = metric_set,
+    control = control_grid(save_pred = TRUE)
+  )
+    
+  return(model_params)
+}
+
+# Define metric set
+tuning_metrics <- metric_set(rmse, rsq, mae)
+
+# Create workflows and models for BOS and OSA
+  # BOS Model Tune Setup
+  tuned_bos_model <- xx_model_function() %>% 
+    set_engine("model_engine") %>% 
+    set_mode("model_mode")
+  
+  wf_bos_tune <- workflow() %>% 
+    add_recipe(rec_bos) %>% 
+    add_model(tuned_bos_model)
+
+  # OSA Model Tune Setup
+  tuned_osa_model <- xx_model_function() %>% 
+  set_engine("model_engine") %>% 
+  set_mode("model_mode")
+
+  wf_osa_tune <- workflow() %>% 
+    add_recipe(rec_osa) %>% 
+    add_model(tuned_osa_model)
+
+# Tune both models
+bos_tuned <- tune_model(wf_bos_tune, 
+                        resamples = up_10cv, 
+                        metric_set = tuning_metrics)
+osa_tuned <- tune_model(wf_osa_tune,
+                        resamples = up_10cv,
+                        metric_set = tuning_metrics)
+
+# Collect predicitons from final fits
+preditctions_bos <- collect_predictions(final_fit_bos)
+predicitons_osa <- collect_predictions(final_fit_osa)
+```
+
+```{r Finalizing Tuning}
+# Define custom func to finalize model fit
+finalize_model <- function(tuned_results, workflow, split, metric = "mae") {
+  # Select best hyperparameters for metric
+  hp_best <- select_best(tuned_results, metric = metric)
+  
+  # Finalize the workflow using the best hyperparameters
+  final_wf <- finalize_work(workflow, hp_best)
+  
+  # Fit the finalized workflow to the training data
+  final_fit <- last_fit(final_wf, split = split)
+  
+  return(final_fit)
+}
+
+# Define custom func to augment pred and calc residuals
+augment_with_residuals <- function(final_fit, new_data, target_var) {
+  # Augment predictions w/ new data
+  augment_preds <- augment(final_fit, new_data = new_data)
+
+  # Calulate squared residuals
+  augment_preds< - augment_preds %>% 
+    mutate(residual_sq = (get(target_var) - .pred)^2)
+  
+  return(augmented_preds)
+}
+
+# Define custon func to plot pred and residuals
+plot_predictions <- function(augmented_preds, target_var, title_prefix = "Model") {
+  #Plot Actual vs Predicted
+  p1 <- ggplot(augmented_preds, aes(x = .pred, y = get(target_var))) +
+    geom_smooth(method = lm, color = "blue") +
+    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+    scale_color_gradient() +
+    labs(
+      title = paste("title_prefix", "Actual vs. Predicted Values"),
+      x = "Predicted",
+      y = "Actual"
+    ) +
+    theme_minimal()
+  
+  # Plot sq-residuals
+  p2 <- ggplot(augmented_preds, aes( x= .pred, y = residual_sq)) +
+    geom_point() +
+    labs(title = paste(title_prefix, "Squared Residuals")) +
+    theme_minimal()
+  
+  # Combine both plots
+  combined_plots <- p1 | p2
+  return(combined_plots)
+}
+
+# Run finalize_model() to find final_fit
+  bos_final_fit <- finalize_model(bos_tuned, wf_bos_tune, up_split)
+  osa_final_fit <- finalize_model(osa_tuned, wf_osa_tune, up_split)
+  
+# Augment pred + calc residuals
+  bos_aug_pred <- augment_with_residuals(bos_final_fit, urban_parks_data)
+  osa_aug_pred <- augment_with_residuals(osa_final_fit, urban_parks_data)
+    
+# Vizualizing tuning results
+  # Create Plots
+    bos_tuning_plots <- plot_predictions() + ggtitle("Built Open Space Tuning Results")
+    osa_tuning_plots <- plot_predictions() + ggtitle("Open Space Access Tuning Results")
+    combined_tuning_plots <- bos_tuning_plots/osa_tuning_plots
+  # Print Plots
+    print(combined_tuning_plots)
+
+```
+
+```{r Applying the Model}
+# Predicting missing data from the UN data set based on the Parkserve data set.
+
+
 
 ```
 
