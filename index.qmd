@@ -86,6 +86,7 @@ library(parsnip)        # Unified interface to model functions (part of tidymode
 library(patchwork)      # Combine ggplot2 plots with intuitive syntax
 library(plotly)         # Interactive plots built on top of ggplot2 or base R
 library(powerjoin)      # Flexible joins that track and resolve conflicts
+library(purrr)          # For functional programming (mapping)
 library(recipes)        # Preprocessing pipelines for modeling (part of tidymodels)
 library(skimr)          # Quick summaries of data frames with descriptive stats
 library(tidymodels)     # Collection of packages for modeling and machine learning
@@ -111,8 +112,13 @@ clean_parkserve_data <- parkserve_data %>%
     # Fix design/natural park area percentage calculations
     percent_designed_parks = ifelse(parkland_area == 0, NA, (designed_park_area / parkland_area) * 100),
     percent_natural_parks = ifelse(parkland_area == 0, NA, (natural_park_area / parkland_area) * 100),
-    #New calculation for designed-natural area ratio
-    dn_area_ratio = ifelse(percent_natural_parks == 0, NA, percent_designed_parks / percent_natural_parks)
+    #New calculations
+    dn_area_ratio = ifelse(percent_natural_parks == 0, NA, percent_designed_parks / percent_natural_parks),   # Designed-natural area ratio
+    parkland_per_capita = ifelse(city_pop == 0, NA, parkland_area / city_pop),   # Parkland per capita
+    land_per_capita = ifelse(city_pop == 0, NA, land_area / city_pop),   # Land per capita (opposite of density)
+    pop_near_parks = city_pop * percent_half_mile_walk,   # Pop near parks (very similar to UN data open space access, DOTHIS:: If time compare pop_near_parks and un open space access)
+    park_units_per_area = ifelse(land_area == 0, NA, park_units / land_area),   # Park unit density
+    park_units_per_capita = ifelse(city_pop == 0, NA, park_units / city_pop)   # Park units per capita
   )
   
 # Join data removing cities found in only one of the two datasets
@@ -162,7 +168,7 @@ glimpse(urban_parks_data)
 # Find Top/Bottom cities for percent parkland
   
   # Select relevant columns
-    simplified_vars <- c("city_name", "city_pop", "revised_area", "pop_density", "parkland_area", "dn_area_ratio", "parkland_percent", "parkland_per_1k_pop", "percent_half_mile_walk")
+    simplified_vars <- c("city_name", "city_pop", "revised_area", "pop_density", "parkland_area", "dn_area_ratio", "parkland_percent", "parkland_per_1k_pop", "percent_half_mile_walk", "pop_near_parks")
   
   # Filter top/bottom 10 cities
   top10_park_percent <- urban_parks_data %>% 
@@ -230,10 +236,10 @@ dn_area_ratio_vs_park_percent_plot <- ggplot(urban_parks_data, aes(x = dn_area_r
   scale_y_continuous(labels = scales::label_comma()) +
   theme_minimal()
 
-# Scatterplot: Percent Designed Parks vs Percent Natural Parks
-designed_vs_natural_parks_plot <- ggplot(urban_parks_data, aes(x = percent_designed_parks, y = percent_natural_parks)) +
+# Scatterplot: Population Near Parks vs Mean % Open Space Access"
+pop_park_proximity_plot <- ggplot(urban_parks_data, aes(x = mean_percent_open_space_access, y = (pop_near_parks/100000))) +
   geom_point(color = "cadetblue") +
-  labs(x = "Percent Designed Parks", y = "Percent Natural\nParks", title = "Percent Designed vs Natural Parks") +
+  labs(x = "Mean % Open Space Access", y = "100k Population\nNear Parks", title = "Population Near Parks vs\nMean % Open Space Access") +
   theme_minimal()
 
 # Scatterplot: Percent Open Space Access vs Percent Built Open Space
@@ -242,12 +248,61 @@ open_space_access_vs_built_plot <- ggplot(urban_parks_data, aes(x = mean_percent
   labs(x = "Mean % Open Space Access", y = "Mean % Built\nOpen Space", title = "Accessibility of Built Open Space") +
   theme_minimal()
 
-# Combine all plots in one figure using patchwork (optional)
-all_eda_plots <- (land_area_plot | land_vs_park_area_plot) / 
-  (density_vs_park_percent_plot | dn_area_ratio_vs_park_percent_plot) / 
-  (designed_vs_natural_parks_plot| open_space_access_vs_built_plot) +
-  plot_layout(guides = "collect")
+# Scatterplot: Land Per Capita vs Parkland Area
+land_pc_vs_park_area_plot <- ggplot(urban_parks_data, aes(x = land_per_capita, y = parkland_area)) +
+  geom_point(color = "royalblue") +
+  labs(x = "Land Per Capita (Acres)", y = "Parkland Area (Acres)", title = "Land Per Capita vs Parkland Area") +
+  theme_minimal()
 
+# Scatterplot: Parkserve Proxomity Data vs\nUN Access Data
+pct_walk_vs_osa_plot <- ggplot(urban_parks_data, aes(x = percent_half_mile_walk, y = mean_percent_open_space_access)) +
+  geom_point(color = "darkred") +
+  labs(x = "% of Pop. < 0.5 Miles\nfrom a Park", y = "Mean % Open\nSpace Access", title = "Park Proximity (Parkserve)\n vs Access (UN)") +
+  theme_minimal()
+
+# Use tornado plots to show variables with strong impact on model outputs
+  # Function to create a tornado plot for a given target variable
+  create_tornado_plot <- function(data, target_var) {
+    
+    # Check if target_var exists in the dataset
+    if (!(target_var %in% names(data))) {
+      stop("Target variable not found in the dataset!")
+    }
+    
+    # Compute correlation of all numeric variables with the target variable
+    correlation_matrix <- cor(data %>% select_if(is.numeric), use = "complete.obs")  # Compute correlation matrix
+    
+    # Extract the correlation values for the target variable and convert to data frame
+    correlation_data <- data.frame(
+      variable = rownames(correlation_matrix),
+      correlation = abs(correlation_matrix[target_var, ])
+    ) %>%
+        filter(variable != target_var) %>%  # Remove the target variable itself
+        arrange(desc(correlation))  # Sort by correlation value
+    
+    # Create tornado plot
+    tornado_plot <- ggplot(correlation_data, aes(x = reorder(variable, correlation), y = correlation)) +
+      geom_bar(stat = "identity", fill = "steelblue") +
+      coord_flip() +  # Flip coordinates to create horizontal bars
+      labs(x = "Variables", y = "Absolute Correlation", title = paste("Feature Correlation\nw/", target_var)) +
+      theme_minimal()
+    
+    return(tornado_plot)
+  }
+
+  # Make plots
+  bos_tornado_plot <- create_tornado_plot(urban_parks_data, "mean_percent_built_open_space")
+  osa_tornado_plot <- create_tornado_plot(urban_parks_data, "mean_percent_open_space_access")
+
+# Combine all plots in one figure using patchwork (optional)
+pt1_eda_plots <- (land_area_plot | land_vs_park_area_plot) / 
+  (density_vs_park_percent_plot | land_pc_vs_park_area_plot) +
+    plot_layout(guides = "collect")
+
+pt2_eda_plots <- (dn_area_ratio_vs_park_percent_plot | pct_walk_vs_osa_plot) / 
+  (pop_park_proximity_plot | open_space_access_vs_built_plot) +
+    plot_layout(guides = "collect")
+  
 # Display data summary and visualization
 
   # Display flextables
@@ -256,146 +311,149 @@ all_eda_plots <- (land_area_plot | land_vs_park_area_plot) /
   bottom10_park_percent_flex 
   
   # Display patchwork plots
-  all_eda_plots
+  pt1_eda_plots
+  pt2_eda_plots
+  bos_tornado_plot
+  osa_tornado_plot
 
 ```
+
 ## Modeling
 
 4.	Prep data and split it into training and testing datasets. Perform a 10-fold cross-validation on training data. 
-5.	Create a recipe.
-6.	Set up several models in regression mode. 
-7.	Create a workflow set including the previously written models and the recipe. 
-8.	Map function over workflow using workflow map.
-9.	Using the highest performing model, fit the data and augment. 
-10.	Plot and graph data to visually display test results.
-11. Explore using the model to predict values for cities included in only one document (if time allows).
+```{r Data Splitting}
+# Data Prep
+urban_parks_summarized <- urban_parks_data %>%
+  # Remove unecessary data
+  select(-city_name,
+         -land_area,
+         -park_units,
+         -park_units_per_10k_pop,
+         -park_units_per_area,
+         -park_units_per_capita)
 
-```{r Model Creation}
-# Set seed
+glimpse(urban_parks_summarized)
+
+# Set a random seed for reproducibility
 set.seed(567)
 
-# Generate data split
-up_split <- initial_split(urban_parks_data, prop = 0.8)   # up ~ urban_parks
+# Split data into training (80%) and testing (20%) sets
+up_split <- initial_split(urban_parks_summarized, prop = 0.8)
 up_train <- training(up_split)
 up_test <- testing(up_split)
 
-# Cross validation folds
+# Create 10-fold cross-validation resampling for the training data
 up_10cv <- vfold_cv(up_train, v = 10)
 
-# Recipes
+```
 
-  # Recipe for mean_percent_built_open_space
-  rec_bos <- recipe(DOTHIS:: Complete Recipe)
-  
-  # Recipe for mean_percent_open_space_access
-  rec_osa <- recipe(DOTHIS:: Complete Recipe)
-  
-  # Build recipe list
-  recipes <- list(built_os = rec_bos,    # Built Open Space
-                  os_access = rec_osa)   # Open Space Access
+5.	Create recipes with built open space and open space access as outputs.
+```{r Preprocessing Recipes}
+# Recipe for mean_percent_built_open_space
+rec_bos <- recipe(mean_percent_built_open_space ~ parkland_per_capita + designed_park_area + land_per_capita + natural_park_area + parkland_area, data = up_train) %>%
+  step_naomit(all_predictors(), all_outcomes()) %>%  # Remove missing values from predictors and outcomes
+  step_YeoJohnson(all_numeric()) %>%  # Apply Yeo-Johnson transformation to numeric variables
+  step_normalize(all_numeric()) %>%  # Normalize all numeric predictors
+  step_corr(all_predictors(), threshold = 0.9) %>%  # Remove highly correlated predictors (threshold > 0.9)
 
-# Define Models
-  
-  EX) xx_model <- model_func() %>% 
-        set_engine("model_eng") %>% 
-        set_mode("regression")
-  
+# Recipe for mean_percent_open_space_access
+rec_osa <- recipe(mean_percent_open_space_access ~ parkland_percent + percent_half_mile_walk + pop_density + parkland_area + pop_near_parks + parkland_per_capita + city_pop, data = up_train) %>%
+  step_naomit(all_predictors(), all_outcomes()) %>%  # Remove missing values from predictors and outcomes
+  step_YeoJohnson(all_numeric()) %>%  # Apply Yeo-Johnson transformation to numeric variables
+  step_normalize(all_numeric()) %>%  # Normalize all numeric predictors
+  step_corr(all_predictors(), threshold = 0.9) %>%  # Remove highly correlated predictors (threshold > 0.9)
+  step_interact(~ parkland_percent * pop_density + parkland_percent * percent_half_mile_walk + pop_density * percent_half_mile_walk)  # Add interaction terms
+
+# Combine both recipes into a list
+recipes <- list(
+  built_os = rec_bos,    # Built Open Space recipe
+  os_access = rec_osa    # Open Space Access recipe
+)
+
+```
+
+6.	Set up several models in regression mode. 
+```{r Model Specifications}
+# Penalized Linear Regression (LASSO)
+lasso_model <- linear_reg(penalty = tune(), mixture = 1) %>%
+  set_engine("glmnet") %>% 
+  set_mode("regression")
+
+# Random Forest (Tree-Based Model)
+rf_model <- rand_forest(mtry = 3, trees = 300, min_n = 5) %>%   
+  set_engine("ranger") %>% 
+  set_mode("regression")
+
+# Gradient Boosting Machine (Boosted Tree Model)
+xg_model <- boost_tree(trees = 300, tree_depth = 3, learn_rate = 0.1) %>% 
+  set_engine("xgboost") %>% 
+  set_mode("regression")
+
+# Neural Network (Multi-Layer Perceptron - MLP)
+nn_model <- mlp(hidden_units = 3, penalty = 0.1, epochs = 100) %>% 
+  set_engine("nnet") %>% 
+  set_mode("regression")
+
 # Compile list of models
-models <- list(xx = xx_model, 
-               ...)
+models <- list(lasso = lasso_model, rf = rf_model, xg = xg_model, nn = nn_model)
 
-# combine models and preproc (recipes) into a workflow set
+```
+
+7.	Create a workflow set combining recipes and models into a workflow set for cross validation.
+```{r Workflow Set Criss Validation}
+# Create a workflow set combining recipes and models
 up_wf_set <- workflow_set(
   preproc = recipes,
-  models = models) %>% 
+  models = models) %>%
   workflow_map("fit_resamples", seed = 520, resamples = up_10cv)
 
-# Autoplot & Rank Results
-autoplot(up_wf_set)
-
-rank_results(up_wf_set, rank_metric = "rsq", select_best = TRUE)
-
 ```
 
-```{r Evaluating Selected Model}
-# Fit selected model for each output w/ workflow
-  # Feature importance (vip::vip(fit)
-
-# Evaluate selected model
-predictions <- augment(DOTHIS::fit_wf_name, new_data = test) %>% 
-  mutate(diff = abs(observed - .pred))   # Compute |abs| differences
-
-metrics(predictions, truth = logC, estimate = .pred)
-
-# Visualize predictions vs actual values for both outputs (ideally one plot but could use patchwork)
-  # See in_class_demo.R for ggplot example
-
-```
-
-```{r Tuning Selected Model}
-# Define custom tuning function
+8.	Tune models to optimize hyperparameters for each.
+```{r Model Tuning}
+# Define custom tuning function to extract and tune model parameters
 tune_model <- function(wf, resamples) {
-  
-  # Extract tunable parameters
+  # Extract tunable parameters from the workflow
   dials <- extract_parameter_set_dials(wf)
   
-  # Define search space with a grid
+  # Define search space for tuning
   grid <- grid_space_filling(dials, size = 20)
   
-  # Tune grid
+  # Tune the model with grid search
   model_params <- tune_grid(
     wf,
     resamples = resamples,
     grid = grid,
-    metrics = metric_set,
+    metrics = metric_set(rmse, rsq, mae),
     control = control_grid(save_pred = TRUE)
   )
-    
+  
   return(model_params)
 }
 
-# Define metric set
-tuning_metrics <- metric_set(rmse, rsq, mae)
+# Tune all models using the custom function
+tuned_results <- map(up_wf_set$wflow_id, ~tune_model(.x, up_10cv))
 
-# Create workflows and models for BOS and OSA
-  # BOS Model Tune Setup
-  tuned_bos_model <- xx_model_function() %>% 
-    set_engine("model_engine") %>% 
-    set_mode("model_mode")
-  
-  wf_bos_tune <- workflow() %>% 
-    add_recipe(rec_bos) %>% 
-    add_model(tuned_bos_model)
-
-  # OSA Model Tune Setup
-  tuned_osa_model <- xx_model_function() %>% 
-  set_engine("model_engine") %>% 
-  set_mode("model_mode")
-
-  wf_osa_tune <- workflow() %>% 
-    add_recipe(rec_osa) %>% 
-    add_model(tuned_osa_model)
-
-# Tune both models
-bos_tuned <- tune_model(wf_bos_tune, 
-                        resamples = up_10cv, 
-                        metric_set = tuning_metrics)
-osa_tuned <- tune_model(wf_osa_tune,
-                        resamples = up_10cv,
-                        metric_set = tuning_metrics)
-
-# Collect predicitons from final fits
-preditctions_bos <- collect_predictions(final_fit_bos)
-predicitons_osa <- collect_predictions(final_fit_osa)
 ```
 
-```{r Finalizing Tuning}
-# Define custom func to finalize model fit
+9. Visualize and rank model performance of tuned models
+```{r Model Performance Visualization and Ranking}
+# Autoplot the tuning results for model comparison
+autoplot(up_wf_set)
+
+# Rank the models based on R-squared metric
+rank_results(up_wf_set, rank_metric = "rsq", select_best = TRUE)
+
+```
+
+9.	Select the highest performing model for each output to perform a final fit.
+```{r Custom functions for model finalization and eval.}
+# Function to finalize the model using the best hyperparameters
 finalize_model <- function(tuned_results, workflow, split, metric = "mae") {
-  # Select best hyperparameters for metric
+  # Select the best hyperparameters
   hp_best <- select_best(tuned_results, metric = metric)
   
-  # Finalize the workflow using the best hyperparameters
+  # Finalize the workflow with the best hyperparameters
   final_wf <- finalize_work(workflow, hp_best)
   
   # Fit the finalized workflow to the training data
@@ -404,66 +462,77 @@ finalize_model <- function(tuned_results, workflow, split, metric = "mae") {
   return(final_fit)
 }
 
-# Define custom func to augment pred and calc residuals
+# Function to augment predictions and calculate residuals
 augment_with_residuals <- function(final_fit, new_data, target_var) {
-  # Augment predictions w/ new data
-  augment_preds <- augment(final_fit, new_data = new_data)
-
-  # Calulate squared residuals
-  augment_preds< - augment_preds %>% 
-    mutate(residual_sq = (get(target_var) - .pred)^2)
+  augment_preds <- augment(final_fit, new_data = new_data) %>%
+    mutate(residual_sq = (get(target_var) - .pred)^2)  # Squared residuals
   
-  return(augmented_preds)
+  return(augment_preds)
 }
 
-# Define custon func to plot pred and residuals
+# Function to plot predictions vs actual values and residuals
 plot_predictions <- function(augmented_preds, target_var, title_prefix = "Model") {
-  #Plot Actual vs Predicted
   p1 <- ggplot(augmented_preds, aes(x = .pred, y = get(target_var))) +
     geom_smooth(method = lm, color = "blue") +
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
     scale_color_gradient() +
     labs(
-      title = paste("title_prefix", "Actual vs. Predicted Values"),
+      title = paste(title_prefix, "Actual vs. Predicted Values"),
       x = "Predicted",
       y = "Actual"
     ) +
     theme_minimal()
   
-  # Plot sq-residuals
-  p2 <- ggplot(augmented_preds, aes( x= .pred, y = residual_sq)) +
+  p2 <- ggplot(augmented_preds, aes(x = .pred, y = residual_sq)) +
     geom_point() +
     labs(title = paste(title_prefix, "Squared Residuals")) +
     theme_minimal()
   
-  # Combine both plots
-  combined_plots <- p1 | p2
-  return(combined_plots)
+  return(p1 | p2)
 }
 
-# Run finalize_model() to find final_fit
-  bos_final_fit <- finalize_model(bos_tuned, wf_bos_tune, up_split)
-  osa_final_fit <- finalize_model(osa_tuned, wf_osa_tune, up_split)
-  
-# Augment pred + calc residuals
-  bos_aug_pred <- augment_with_residuals(bos_final_fit, urban_parks_data)
-  osa_aug_pred <- augment_with_residuals(osa_final_fit, urban_parks_data)
-    
-# Vizualizing tuning results
-  # Create Plots
-    bos_tuning_plots <- plot_predictions() + ggtitle("Built Open Space Tuning Results")
-    osa_tuning_plots <- plot_predictions() + ggtitle("Open Space Access Tuning Results")
-    combined_tuning_plots <- bos_tuning_plots/osa_tuning_plots
-  # Print Plots
-    print(combined_tuning_plots)
+```
+
+```{r Final model fitting}
+# Finalize and fit the best models
+bos_final_fit <- finalize_model(tuned_results[["built_os"]], wf_bos_tune, up_split)
+osa_final_fit <- finalize_model(tuned_results[["os_access"]], wf_osa_tune, up_split)
+
+# Augment predictions for evaluation
+bos_aug_pred <- augment_with_residuals(bos_final_fit, up_test, "mean_percent_built_open_space")
+osa_aug_pred <- augment_with_residuals(osa_final_fit, up_test, "mean_percent_open_space_access")
 
 ```
 
-```{r Applying the Model}
-# Predicting missing data from the UN data set based on the Parkserve data set.
+10. Final model prediction and visualization 
+```{r Prediction and Visualization}
+# Create prediction and residual plots for each model
+bos_tuning_plots <- plot_predictions(bos_aug_pred, "mean_percent_built_open_space") + ggtitle("Built Open Space Tuning Results")
+osa_tuning_plots <- plot_predictions(osa_aug_pred, "mean_percent_open_space_access") + ggtitle("Open Space Access Tuning Results")
 
-
+# Combine and display the plots
+combined_tuning_plots <- bos_tuning_plots / osa_tuning_plots
+print(combined_tuning_plots)
 
 ```
+
+11. Use model to predict the variables in the UN dataset for all cities with data in the Parkserve dataset.
+
+```{r Predicting Model Outputs for full Parkserve Dataset}
+# Predict for un_bos using the final BOS model
+un_bos_pred <- predict(boa_final_fit, new_data = clean_parkserve_data) %>% rename(pred_mpct_built_open_space = .pred)  # Renaming the prediction column to un_bos
+
+# Predict for un_osa using the final OSA model
+un_osa_pred <- predict(osa_final_fit, new_data = clean_parkserve_data) %>% rename(pred_mpct_open_space_access = .pred)  # Renaming the prediction column to un_osa
+
+# Join predictions back with the new_cities data
+parkserve_predictions <- clean_parkserve_data %>%
+  bind_cols(un_bos_pred, un_osa_pred)   # Add predicted cols
+```
+
+
+DOTHIS::
+- Update methods from modeling section
+- Check all variables for skewedness
 
 ## References
