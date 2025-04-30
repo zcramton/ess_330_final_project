@@ -10,6 +10,7 @@ authors:
     affiliation: Colorado State University
     roles: 
       - writing
+      
     corresponding: true
   - name: Rachel Delorie
     affiliation: Colorado State University
@@ -80,6 +81,7 @@ The cities found in only one dataset will be cut from the data to accommodate th
 library(baguette)       # Model bagging methods for ensemble learning
 library(ggfortify)      # Autoplot support for time series, PCA, and more
 library(ggthemes)       # Extra themes and scales for ggplot2
+library(glmnet)         # Linear model good with small sample size and minimal overfitting
 library(glue)           # String interpolation with embedded R expressions
 library(here)           # Simplifies file paths for project-based workflows
 library(parsnip)        # Unified interface to model functions (part of tidymodels)
@@ -354,28 +356,28 @@ rec_bos <- recipe(mean_percent_built_open_space ~ parkland_per_capita + designed
   step_naomit(all_predictors(), all_outcomes()) %>%  # Remove missing values from predictors and outcomes
   step_YeoJohnson(all_numeric()) %>%  # Apply Yeo-Johnson transformation to numeric variables
   step_normalize(all_numeric()) %>%  # Normalize all numeric predictors
-  step_corr(all_predictors(), threshold = 0.9) %>%  # Remove highly correlated predictors (threshold > 0.9)
+  step_corr(all_predictors(), threshold = 0.9)  # Remove highly correlated predictors (threshold > 0.9)
 
-# Recipe for mean_percent_open_space_access
-rec_osa <- recipe(mean_percent_open_space_access ~ parkland_percent + percent_half_mile_walk + pop_density + parkland_area + pop_near_parks + parkland_per_capita + city_pop, data = up_train) %>%
+# Recipes for mean_percent_open_space_access
+rec_osa1 <- recipe(mean_percent_open_space_access ~ parkland_percent + percent_half_mile_walk + pop_density + parkland_area + pop_near_parks + parkland_per_capita + city_pop, data = up_train) %>%
   step_naomit(all_predictors(), all_outcomes()) %>%  # Remove missing values from predictors and outcomes
-  step_YeoJohnson(all_numeric()) %>%  # Apply Yeo-Johnson transformation to numeric variables
-  step_normalize(all_numeric()) %>%  # Normalize all numeric predictors
+  step_YeoJohnson(all_predictors()) %>%  # Apply Yeo-Johnson transformation to numeric variables
+  step_normalize(all_predictors()) %>%  # Normalize all numeric predictors
   step_corr(all_predictors(), threshold = 0.9) %>%  # Remove highly correlated predictors (threshold > 0.9)
   step_interact(~ parkland_percent * pop_density + parkland_percent * percent_half_mile_walk + pop_density * percent_half_mile_walk)  # Add interaction terms
 
-# Combine both recipes into a list
-recipes <- list(
-  built_os = rec_bos,    # Built Open Space recipe
-  os_access = rec_osa    # Open Space Access recipe
-)
-
+rec_osa2 <- recipe(mean_percent_open_space_access ~ parkland_percent + percent_half_mile_walk + pop_density + parkland_area + pop_near_parks + parkland_per_capita + city_pop, data = up_train) %>%
+  step_naomit(all_predictors(), all_outcomes()) %>%  # Remove missing values from predictors and outcomes
+  step_YeoJohnson(all_numeric()) %>%  # Apply Yeo-Johnson transformation to numeric variables
+  step_normalize(all_numeric()) %>%  # Normalize all numeric predictors
+  step_corr(all_predictors(), threshold = 0.9)  # Remove highly correlated predictors (threshold > 0.9)
+  
 ```
 
 6.	Set up several models in regression mode. 
 ```{r Model Specifications}
 # Penalized Linear Regression (LASSO)
-lasso_model <- linear_reg(penalty = tune(), mixture = 1) %>%
+lasso_model <- linear_reg(penalty = 0.1, mixture = 1) %>%
   set_engine("glmnet") %>% 
   set_mode("regression")
 
@@ -402,52 +404,66 @@ models <- list(lasso = lasso_model, rf = rf_model, xg = xg_model, nn = nn_model)
 7.	Create a workflow set combining recipes and models into a workflow set for cross validation.
 ```{r Workflow Set Criss Validation}
 # Create a workflow set combining recipes and models
-up_wf_set <- workflow_set(
-  preproc = recipes,
-  models = models) %>%
-  workflow_map("fit_resamples", seed = 520, resamples = up_10cv)
+bos_wf_set <- workflow_set(
+  preproc = list(bos = rec_bos),
+  models = models,
+  cross = TRUE)
 
+osa_wf_set <- workflow_set(
+  preproc = list( osa1 = rec_osa1, osa2 = rec_osa2),
+  models = models,
+  cross = TRUE)
 ```
 
 8.	Tune models to optimize hyperparameters for each.
 ```{r Model Tuning}
-# Define custom tuning function to extract and tune model parameters
-tune_model <- function(wf, resamples) {
-  # Extract tunable parameters from the workflow
-  dials <- extract_parameter_set_dials(wf)
-  
-  # Define search space for tuning
-  grid <- grid_space_filling(dials, size = 20)
-  
-  # Tune the model with grid search
-  model_params <- tune_grid(
-    wf,
-    resamples = resamples,
-    grid = grid,
-    metrics = metric_set(rmse, rsq, mae),
-    control = control_grid(save_pred = TRUE)
-  )
-  
-  return(model_params)
-}
+# Tune Models for bos_wf_set
+bos_tuned_results <- workflow_map(
+  bos_wf_set,
+  fn = "tune_grid",
+  resamples = up_10cv,
+  grid = 10,  # Specify grid size or tuning parameters
+  metrics = metric_set(rmse, rsq, mae),
+  control = control_grid(save_pred = TRUE)
+)
 
-# Tune all models using the custom function
-tuned_results <- map(up_wf_set$wflow_id, ~tune_model(.x, up_10cv))
+# Tune Models for osa_wf_set
+osa_tuned_results <- workflow_map(
+  osa_wf_set,
+  fn = "tune_grid",
+  resamples = up_10cv,
+  grid = 10,  # Specify grid size or tuning parameters
+  metrics = metric_set(rmse, rsq, mae),
+  control = control_grid(save_pred = TRUE)
+)
 
 ```
 
 9. Visualize and rank model performance of tuned models
 ```{r Model Performance Visualization and Ranking}
-# Autoplot the tuning results for model comparison
-autoplot(up_wf_set)
+# Plot the tuning results for model comparison
+autoplot(bos_tuned_results) + 
+  ggtitle("BOS Tuning Results") +
+    aes(x = wflow_id) + 
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+autoplot(osa_tuned_results) + 
+  ggtitle("OSA Tuning Results") +
+  aes(x = wflow_id) +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1))
 
 # Rank the models based on R-squared metric
-rank_results(up_wf_set, rank_metric = "rsq", select_best = TRUE)
+rank_results(bos_tuned_results, rank_metric = "rsq", select_best = TRUE)
+rank_results(osa_tuned_results, rank_metric = "rsq", select_best = TRUE)
 
 ```
 
 9.	Select the highest performing model for each output to perform a final fit.
 ```{r Custom functions for model finalization and eval.}
+DOTHIS:: Review these funcs and resolve select_best issue in chunk 10
 # Function to finalize the model using the best hyperparameters
 finalize_model <- function(tuned_results, workflow, split, metric = "mae") {
   # Select the best hyperparameters
@@ -495,8 +511,8 @@ plot_predictions <- function(augmented_preds, target_var, title_prefix = "Model"
 
 ```{r Final model fitting}
 # Finalize and fit the best models
-bos_final_fit <- finalize_model(tuned_results[["built_os"]], wf_bos_tune, up_split)
-osa_final_fit <- finalize_model(tuned_results[["os_access"]], wf_osa_tune, up_split)
+bos_final_fit <- finalize_model(bos_tuned_results, wf_bos_tune, up_split)
+osa_final_fit <- finalize_model(osa_tuned_results, wf_osa_tune, up_split)
 
 # Augment predictions for evaluation
 bos_aug_pred <- augment_with_residuals(bos_final_fit, up_test, "mean_percent_built_open_space")
