@@ -20,9 +20,6 @@ authors:
 bibliography: references.bib
 csl: apa.csl
 ---
-
-### NOTE: Rendering is currently broken, just save and push. I will work on it with Mike next week.
-
 # Urbanization, Density and Access to Public Parks in the United States
 
 ## Abstract
