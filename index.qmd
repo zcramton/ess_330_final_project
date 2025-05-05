@@ -1,16 +1,16 @@
 ---
 title: 'ESS 330 Final Project Report - Lab 9'
 authors:
-  - name: Bella Conrad
-    affiliation: Colorado State University
-    roles: 
-      - writing
-    corresponding: false
   - name: Zachary Cramton
     affiliation: Colorado State University
     roles: 
       - writing
     corresponding: true
+  - name: Bella Conrad
+    affiliation: Colorado State University
+    roles: 
+      - writing
+    corresponding: false
   - name: Rachel Delorie
     affiliation: Colorado State University
     roles: 
