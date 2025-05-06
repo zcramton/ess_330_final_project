@@ -68,7 +68,8 @@ The cities found in only one dataset will be cut from the data to accommodate th
 10.	Plot and graph data to visually display test results.
 11. Explore using the model to predict values for cities included in only one document (if time allows).
 
-## Exploratory Data Analysis (EDA)
+## Results
+### Exploratory Data Analysis (EDA)
 <p> The data has already been discussed in general terms in the data overview section. There will be a readme file created to elaborate on the sources, formatting and manipulation required for each dataset before joining them into the urban_parks_data data frame. In general terms, prior to importing into RStudio, the .xml files the data came in were opened in MS Excel; the sheets were formatted to be converted to .csv files including condensing multiple worksheets of the ParkServe® data into a sinigle sheet for easier conversion to a .csv file. While some of the cleaning done in Excel could have been completed in RStudio, it was not efficient to do so. Using Excel was faster and more flexible for that use case. Similar reformatting was required with the UN data as the headers were unreasonably long by default. The readme that will be created for each (or both) files will include a more detailed summary of what each variable means.
 
 ```{r}
@@ -129,9 +130,7 @@ glimpse(urban_parks_data)
 ```
 
 
-```{r}
-#| label: Basic EDA
-
+```{r Basic EDA}
 # Descriptive Stats
 
   # Write function to round numeric columns to two decimal places
@@ -317,9 +316,8 @@ pt2_eda_plots <- (dn_area_ratio_vs_park_percent_plot | pct_walk_vs_osa_plot) /
 
 ```
 
-## Modeling
-
-### 4.	Prep data and split it into training and testing datasets. Perform a 10-fold cross-validation on training data. 
+### Modeling
+#### Prep Data
 ```{r Data Splitting}
 # Set a random seed for reproducibility
 set.seed(567)
@@ -334,7 +332,7 @@ up_boot_splits <- bootstraps(data = up_train, times = 25) # Using bootstraps sta
 
 ```
 
-### 5.	Create recipes with built open space and open space access as outputs.
+#### Create Recipes
 ```{r Preprocessing Recipes}
 # Recipe for mean_percent_built_open_space
 rec_bos <- recipe(mean_percent_built_open_space ~ parkland_per_capita + designed_park_area + land_per_capita + natural_park_area + parkland_area, data = up_train) %>%
@@ -363,7 +361,7 @@ rec_osa_2 <- recipe(mean_percent_open_space_access ~ parkland_percent + percent_
   
 ```
 
-### 6.	Set up several models in regression mode. 
+#### Build Models
 ```{r Model Specifications}
 # Linear Regression
 lm_model <- linear_reg() %>%
@@ -383,7 +381,7 @@ xg_model <- boost_tree() %>%
 
 ```
 
-### 7. Compose workflow sets to test each recipe on all models.
+#### Combine Models and Recipes
 ```{r Workflow setup}
 # Compile list of models
 models <- list(lm = lm_model, rf = rf_model, xg = xg_model)
@@ -404,8 +402,7 @@ osa_wf_set <- workflow_set(
   workflow_map('fit_resamples', resamples = up_boot_splits)
 
 ```
-### 8. Vizualize Model Performance
-####   Rank and Select the Best Model for Each Output
+#### Vizualize & Rank Model Performance
 ```{r Visualize Model Performance & Ranking}
 # Visualize Model Performance
 autoplot(bos_wf_set) + 
@@ -427,5 +424,164 @@ rank_results(bos_wf_set, rank_metric = "rsq", select_best = TRUE)
 rank_results(osa_wf_set, rank_metric = "rsq", select_best = TRUE)
 ```
 
+#### Model Tuning
+```{r Model Tuning}
+# BOS Model Tuning
+tuned_bos_model <- boost_tree(
+  mtry = tune(),
+  trees = tune(),
+  min_n = tune(),
+  learn_rate = tune(),
+  tree_depth = tune()) %>%
+  set_engine("xgboost") %>%
+  set_mode("regression")
+
+tune_bos_wf <- workflow() %>% 
+  add_recipe(rec_bos) %>% 
+  add_model(tuned_bos_model)
+
+
+# Create parameter set
+bos_dials <- extract_parameter_set_dials(tune_bos_wf) %>% 
+  finalize(up_train)
+
+bos_grid <- grid_space_filling(bos_dials, size = 20)
+
+bos_model_params <- tune_grid(
+  tune_bos_wf,
+  resamples = up_boot_splits,
+  grid = bos_grid,
+  metrics = metric_set(rmse, rsq, mae),
+  control = control_grid(save_pred = TRUE)
+)
+
+autoplot(bos_model_params)
+
+bos_preds <- collect_metrics(bos_model_params)
+bos_best_mae <- show_best(bos_model_params, metric = "mae", n = 1)
+bos_hp_best <- select_best(bos_model_params, metric = "mae")
+
+bos_final_wf <- finalize_workflow(tune_bos_wf, bos_hp_best)
+bos_final_fit <- last_fit(bos_final_wf, split = up_split)
+bos_final_metrics <- collect_metrics(bos_final_fit)
+                        
+# OSA Model Tuning
+tuned_osa_model <- boost_tree(
+  mtry = tune(),
+  trees = tune(),
+  min_n = tune(),
+  learn_rate = tune(),
+  tree_depth = tune()) %>% 
+  set_engine("xgboost") %>%
+  set_mode("regression")
+
+tune_osa_wf <- workflow() %>% 
+  add_recipe(rec_osa_2) %>% 
+  add_model(tuned_osa_model)
+
+# Create parameter set
+osa_dials <- extract_parameter_set_dials(tune_osa_wf) %>% 
+  finalize(up_train)
+
+osa_grid <- grid_space_filling(osa_dials, size = 20)
+
+osa_model_params <- tune_grid(
+  tune_osa_wf,
+  resamples = up_boot_splits,
+  grid = osa_grid,
+  metrics = metric_set(rmse, rsq, mae),
+  control = control_grid(save_pred = TRUE)
+)
+
+autoplot(osa_model_params)
+
+osa_preds <- collect_metrics(osa_model_params)
+osa_best_mae <- show_best(osa_model_params, metric = "mae", n = 1)
+osa_hp_best <- select_best(osa_model_params, metric = "mae")
+
+osa_final_wf <- finalize_workflow(tune_osa_wf, osa_hp_best)
+osa_final_fit <- last_fit(osa_final_wf, split = up_split)
+osa_final_metrics <- collect_metrics(osa_final_fit)
+```
+
+### 10. Model Tuning Results
+```{r Model Tuning Results}
+# Print bos and osa model params
+print(bos_preds)
+print(osa_preds)
+
+bos_preds_plot <- ggplot(bos_preds, aes(x = .pred, y = percent_mean_built_open_space)) +
+  geom_smooth(method = lm, color = "blue") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  scale_color_gradient() +
+  labs(
+    title = "Actual vs. Predicted Values for % Mean Built Open SPace", 
+    x = "Predicted", 
+    y = "Actual")
+  
+osa_preds_plot <- ggplot(osa_preds, aes(x = .pred, y = percent_mean_open_space_access)) +
+  geom_smooth(method = lm, color = "blue") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  scale_color_gradient() +
+  labs(
+    title = "Actual vs. Predicted Values for % Mean Open Space Access", 
+    x = "Predicted", 
+    y = "Actual")
+
+pre_aug_combo_plot <- bos_preds_plot | osa_preds_plot
+print(pre_aug_combo_plot)
+```
+
+### 11. Finalize Tuning Workflows
+```{r Finalize Tuning WOrkflows}
+# Finalize BOS tuning wf
+bos_final_fit_full <- fit(bos_final_wf, data = urban_parks_data)
+bos_augmented_preds <- augment(bos_final_fit_full, new_data = urban_parks_data)
+
+bos_augmented_preds <- bos_augmented_preds %>% 
+  mutate(residual_sq = (percent_mean_built_open_space - .pred)^2)
+
+bos_map_preds <- ggplot(augmented_preds, aes(x = .pred, y = percent_mean_built_open_space)) +
+  geom_point(aes(color = .pred), size = 3, alpha = 0.8) +
+  scale_color_viridis_c(name = "Predicted") +
+  coord_fixed() +
+  labs(title = "Map of Predicted logQmean") +
+  theme_minimal()
+
+bos_map_resid <- ggplot(augmented_preds, aes(x = .pred, y = residual_sq)) +
+  geom_point() +
+  scale_color_viridis_c(name = "Residual²") +
+  labs(title = "Map of Squared Residuals") +
+  theme_minimal()
+
+bos_maps_combined <- bos_map_preds | bos_map_resid
+
+print(bos_maps_combined)
+
+# Finalize OSA tuning wf
+osa_final_fit_full <- fit(osa_final_wf, data = urban_parks_data)
+osa_augmented_preds <- augment(osa_final_fit_full, new_data = urban_parks_data)
+
+osa_augmented_preds <- osa_augmented_preds %>% 
+  mutate(residual_sq = (percent_mean_built_open_space - .pred)^2)
+
+osa_map_preds <- ggplot(augmented_preds, aes(x = .pred, y = percent_mean_open_space_access)) +
+  geom_point(aes(color = .pred), size = 3, alpha = 0.8) +
+  scale_color_viridis_c(name = "Predicted") +
+  coord_fixed() +
+  labs(title = "Map of Predicted logQmean") +
+  theme_minimal()
+
+osa_map_resid <- ggplot(augmented_preds, aes(x = .pred, y = residual_sq)) +
+  geom_point() +
+  scale_color_viridis_c(name = "Residual²") +
+  labs(title = "Map of Squared Residuals") +
+  theme_minimal()
+
+osa_maps_combined <- osa_map_preds | osa_map_resid
+
+print(osa_maps_combined)
+
+```
 
 ## References
