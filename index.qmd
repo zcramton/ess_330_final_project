@@ -19,67 +19,94 @@ authors:
 bibliography: references.bib
 csl: apa.csl
 ---
+
 # Urbanization, Density and Access to Public Parks in the United States
 
 ## Abstract
 
 ### Introduction
 
-<p> Since 2008, the majority of the world's population has lived in urban areas, a result of urbanization in developing countries [@kohlhase2013new; @beall2010urbanization]. The United States developed earlier than many nations, with more than 50 percent of the population living in urban areas. 
+<p>
 
-:::{.callout-note}
+Since 2008, the majority of the world's population has lived in urban areas, a result of urbanization in developing countries [@kohlhase2013new; @beall2010urbanization]. The United States developed earlier than many nations, with more than 50 percent of the population living in urban areas by by the 14th Census in 1920.
+
+::: callout-note
 ### Definition of Urban Areas in Census History
+
 Prior to the 2020 Census urban areas were defined as any area with greater than 2500 people. Following the 2010 census urban clusters described areas with populations greater than 2,500 and less than 50,000; urbanized areas described areas with a population greater than 50,000. For the 2020 Census the threshold was changed to 5000 people [@ratcliffe_redefining_2022].
 :::
 
-<p> by the 14th Census in 1920. In the century since the 1920 census the percentage of individuals living in urban areas has increased to 80.7% [@slack2020changing]. As more people moved to urban areas, those areas expanded forming urbanized areas and large cities.
-<p>  Urban planning has existed for centuries out of necessity, historically dominated by efficiency and utilitarianism, optimizing the world we live in for profitability, corporate productivity, and automobile-based mobility. This optimization came with sacrifices, which now impact an increasingly large majority of the population. In recent years, the discipline has begun to prioritize human factors over utilitarian efficiency. Thousands of years of living in rural settings makes urban living hard for most people's biology. Connection to nature and time outdoors even in small amounts has been shown to be a vital part maintaining physical and mental health [DOTHIS:: Find additional source]. In an effort to make urban spaces more livable, planners are turning to parks and natural areas to connect people to nature.
-<p>  Equity issues aside, overturning and correcting more than a century of bad planning is a daunting task. Many cities filled in and built up over the course of the 20th century as land became a premium commodity [DOTHIS:: Find additional source]. Does this density present significant challenges for today's planning professionals? This research seeks to investigate the relationship between urban demographics like density and park access. In exploring this relationship, we hypothesize that there is an intermediate/sublinear relationship between urban population density and public open space availability.
+<p>
+
+In the century since the 1920 census the percentage of individuals living in urban areas has increased to 80.7% [@slack2020changing]. As more people moved to urban areas, those areas expanded forming urbanized areas and large cities.
+
+<p>
+
+Urban planning has existed for centuries out of necessity, historically dominated by efficiency and utilitarianism, optimizing the world we live in for profitability, corporate productivity, and automobile-based mobility. This optimization came with sacrifices, which now impact an increasingly large majority of the population. In recent years, the discipline has begun to prioritize human factors over utilitarian efficiency. Thousands of years of living in rural settings makes urban living hard for most people's biology. Connection to nature and time outdoors even in small amounts has been shown to be a vital part maintaining physical and mental health (DOTHIS:: Find Source). In an effort to make urban spaces more livable, planners are turning to parks and natural areas to connect people to nature.
+
+<p>
+
+Equity issues aside, overturning and correcting more than a century of bad planning is a daunting task. Many cities filled in and built up over the course of the 20th century as land became a premium commodity. How does this density present significant challenges for today's planning professionals? This research seeks to investigate the relationship between urban demographics like density, and park access. In exploring this relationship, we hypothesize that there is an intermediate/sublinear relationship between urban population density and public open space availability.
 
 ### Data Overview
 
-<p> This report uses data from the UN-Habitat Urban Indicators Database and the ParkServe® Database maintained by the Trust for Public Land. The UN data relates to the UN-SDG 11.7.1 pertaining to access to open spaces and green areas. 
-<p> The January 2025 version of the UN Open Spaces and Green Areas data includes the average share of urban areas allocated to streets and open public spaces as well as the share of the urban population with convenient access to an open public space. 
+<p>
 
-::: {.callout-note}
+This report uses data from the UN-Habitat Urban Indicators Database and the ParkServe® Database maintained by the Trust for Public Land. The UN data relates to the UN-SDG 11.7.1 pertaining to access to open spaces and green areas.
+
+<p>
+
+The January 2025 version of the UN Open Spaces and Green Areas data includes the average share of urban areas allocated to streets and open public spaces as well as the share of the urban population with convenient access to an open public space.
+
+::: callout-note
 ### UN Definition
+
 In this case, the UN defines "convenient access to an open public space" as the "urban population withing 400 meters walking distance along the street network to an open public space" [@may2000habitat].
 :::
 
-<p> These data collected by the UN were collected in 2020 and provided as a .xls format spreadsheet. These data were converted to .csv format with Microsoft Excel. The ParkServe® data selected for use is the 2020 data set to match the year the UN data was recorded. Specifically, this report uses elements of the City Park Facts: Acreage & Park System Highlights. The ParkServe® data is much less synthesized and was available as a .xml file. The file was structured for viewing as a spreadsheet rather than for further analysis and included multiple worksheets withing the workbook. In converting the file to a .csv file, the data spread across multiple worksheets was collated in a single worksheet and converted to a summarized dataset .csv file.
-<p> These data are lacking a shared numerical position data type but share a city name column formatted as "city_name, two_letter_state_abbreviation". There is not perfect overlap between cities with data in each database however, there are 25 cities shared between the datasets. Cities present in only one data set will be culled when the data is joined.
+<p>
+
+These data collected by the UN were collected in 2020 and provided as a .xls format spreadsheet. These data were converted to .csv format with Microsoft Excel. The ParkServe® data selected for use is the 2020 data set to match the year the UN data was recorded. Specifically, this report uses elements of the City Park Facts: Acreage & Park System Highlights. The ParkServe® data is much less synthesized and was available as a .xml file. The file was structured for viewing as a spreadsheet rather than for further analysis and included multiple worksheets withing the workbook. In converting the file to a .csv file, the data spread across multiple worksheets was collated in a single worksheet and converted to a summarized dataset .csv file.
+
+<p>
+
+These data are lacking a shared numerical position data type but share a city name column formatted as "city_name, two_letter_state_abbreviation". There is not perfect overlap between cities with data in each database however, there are 25 cities shared between the datasets. Cities present in only one data set will be culled when the data is joined.
 
 ### Methods
-1.	Clean the data. The raw data were downloaded as Excel spreadsheets, some reformatting in Excel was required to effectively exporting as a .csv file and importing the new summarized file to RStudio. Remaining data cleaning will occur in R as needed including any header changes or additional columns needed.
-2.	Conduct Exploratory Data Analysis (EDA). 
-3.	Join datasets by “city name” to have a complete working dataset. These data will be combined into a single data frame with an inner join because there is a large number of cities listed in one data set but not the other. The new dataset will include only cities found in both datasets, with columns from both.
 
-::: {.callout-note}
+1.  Clean the data. The raw data were downloaded as Excel spreadsheets, some reformatting in Excel was required to effectively exporting as a .csv file and importing the new summarized file to RStudio. Remaining data cleaning will occur in R as needed including any header changes or additional columns needed.
+2.  Conduct Exploratory Data Analysis (EDA).
+3.  Join datasets by “city name” to have a complete working dataset. These data will be combined into a single data frame with an inner join because there is a large number of cities listed in one data set but not the other. The new dataset will include only cities found in both datasets, with columns from both.
+
+::: callout-note
 ## Limiting Scope
+
 The cities found in only one dataset will be cut from the data to accommodate the limited scope of the project. With a bigger scope it is possible that additional data could be used to understand these patterns with more depth.
 :::
 
-4.	Prep data and split it into training and testing datasets. Perform a 10-fold cross-validation on training data. 
-5.	Create a recipe.
-6.	Set up several models in regression mode. 
-7.	Create a workflow set including the previously written models and the recipe. 
-8.	Map function over workflow using workflow map.
-9.	Using the highest performing model, fit the data and augment. 
-10.	Plot and graph data to visually display test results.
+4.  Prep data and split it into training and testing datasets. Perform a 10-fold cross-validation on training data.
+5.  Create a recipe.
+6.  Set up several models in regression mode.
+7.  Create a workflow set including the previously written models and the recipe.
+8.  Map function over workflow using workflow map.
+9.  Using the highest performing model, fit the data and augment.
+10. Plot and graph data to visually display test results.
 11. Explore using the model to predict values for cities included in only one document (if time allows).
 
 ## Results
-### Exploratory Data Analysis (EDA)
-<p> The data has already been discussed in general terms in the data overview section. There will be a readme file created to elaborate on the sources, formatting and manipulation required for each dataset before joining them into the urban_parks_data data frame. In general terms, prior to importing into RStudio, the .xml files the data came in were opened in MS Excel; the sheets were formatted to be converted to .csv files including condensing multiple worksheets of the ParkServe® data into a sinigle sheet for easier conversion to a .csv file. While some of the cleaning done in Excel could have been completed in RStudio, it was not efficient to do so. Using Excel was faster and more flexible for that use case. Similar reformatting was required with the UN data as the headers were unreasonably long by default. The readme that will be created for each (or both) files will include a more detailed summary of what each variable means.
 
-```{r}
-#| label: Data and Library Setup
+### Exploratory Data Analysis (EDA)
+
+<p>
+
+The data has already been discussed in general terms in the data overview section. There will be a readme file created to elaborate on the sources, formatting and manipulation required for each dataset before joining them into the urban_parks_data data frame. In general terms, prior to importing into RStudio, the .xml files the data came in were opened in MS Excel; the sheets were formatted to be converted to .csv files including condensing multiple worksheets of the ParkServe® data into a sinigle sheet for easier conversion to a .csv file. While some of the cleaning done in Excel could have been completed in RStudio, it was not efficient to do so. Using Excel was faster and more flexible for that use case. Similar reformatting was required with the UN data as the headers were unreasonably long by default. The readme that will be created for each (or both) files will include a more detailed summary of what each variable means.
+
+```{r Data and Library Setup}
 
 library(baguette)       # Model bagging methods for ensemble learning
 library(flextable)      # Tool for building display-ready tables
 library(ggfortify)      # Autoplot support for time series, PCA, and more
 library(ggthemes)       # Extra themes and scales for ggplot2
-library(glmnet)         # Linear model good with small sample size and minimal overfitting
 library(glue)           # String interpolation with embedded R expressions
 library(here)           # Simplifies file paths for project-based workflows
 library(parsnip)        # Unified interface to model functions (part of tidymodels)
@@ -128,7 +155,6 @@ urban_parks_data <- clean_parkserve_data %>%
 # Basic data structure exploration
 glimpse(urban_parks_data)
 ```
-
 
 ```{r Basic EDA}
 # Descriptive Stats
@@ -201,7 +227,7 @@ glimpse(urban_parks_data)
   
   top10_park_percent_flex <- make_best_worst_flextbl(top10_park_percent, "Top 10 Cities for Parkland Percentage")
   
-  bottom10_park_percent_flex <- make_best_worst_flextbl(bottom10_park_percent, "Top 10 Cities for Parkland Percentage")
+  bottom10_park_percent_flex <- make_best_worst_flextbl(bottom10_park_percent, "Bottom 10 Cities for Parkland Percentage")
   
 # Make plots to visualize the data
 # Histogram: Land Area
@@ -317,7 +343,9 @@ pt2_eda_plots <- (dn_area_ratio_vs_park_percent_plot | pct_walk_vs_osa_plot) /
 ```
 
 ### Modeling
+
 #### Prep Data
+
 ```{r Data Splitting}
 # Set a random seed for reproducibility
 set.seed(567)
@@ -333,6 +361,7 @@ up_boot_splits <- bootstraps(data = up_train, times = 25) # Using bootstraps sta
 ```
 
 #### Create Recipes
+
 ```{r Preprocessing Recipes}
 # Recipe for mean_percent_built_open_space
 rec_bos <- recipe(mean_percent_built_open_space ~ parkland_per_capita + designed_park_area + land_per_capita + natural_park_area + parkland_area, data = up_train) %>%
@@ -362,6 +391,7 @@ rec_osa_2 <- recipe(mean_percent_open_space_access ~ parkland_percent + percent_
 ```
 
 #### Build Models
+
 ```{r Model Specifications}
 # Linear Regression
 lm_model <- linear_reg() %>%
@@ -382,6 +412,7 @@ xg_model <- boost_tree() %>%
 ```
 
 #### Combine Models and Recipes
+
 ```{r Workflow setup}
 # Compile list of models
 models <- list(lm = lm_model, rf = rf_model, xg = xg_model)
@@ -402,7 +433,9 @@ osa_wf_set <- workflow_set(
   workflow_map('fit_resamples', resamples = up_boot_splits)
 
 ```
+
 #### Vizualize & Rank Model Performance
+
 ```{r Visualize Model Performance & Ranking}
 # Visualize Model Performance
 autoplot(bos_wf_set) + 
@@ -425,6 +458,7 @@ rank_results(osa_wf_set, rank_metric = "rsq", select_best = TRUE)
 ```
 
 #### Model Tuning
+
 ```{r Model Tuning}
 # BOS Model Tuning
 tuned_bos_model <- boost_tree(
@@ -504,7 +538,8 @@ osa_final_fit <- last_fit(osa_final_wf, split = up_split)
 osa_final_metrics <- collect_metrics(osa_final_fit)
 ```
 
-### 10. Model Tuning Results
+#### Model Tuning Results
+
 ```{r Model Tuning Results}
 # Print bos and osa model params
 print(bos_preds)
@@ -532,7 +567,8 @@ pre_aug_combo_plot <- bos_preds_plot | osa_preds_plot
 print(pre_aug_combo_plot)
 ```
 
-### 11. Finalize Tuning Workflows
+#### Finalize Tuning Workflows
+
 ```{r Finalize Tuning WOrkflows}
 # Finalize BOS tuning wf
 bos_final_fit_full <- fit(bos_final_wf, data = urban_parks_data)
@@ -583,5 +619,11 @@ osa_maps_combined <- osa_map_preds | osa_map_resid
 print(osa_maps_combined)
 
 ```
+
+#### Results Summary
+
+### Discussion
+
+#### Final Conclusions
 
 ## References
