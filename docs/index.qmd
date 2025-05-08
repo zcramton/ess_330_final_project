@@ -42,7 +42,7 @@ In the century since the 1920 census the percentage of individuals living in urb
 
 <p>
 
-Urban planning has existed for centuries out of necessity, historically dominated by efficiency and utilitarianism, optimizing the world we live in for profitability, corporate productivity, and automobile-based mobility. This optimization came with sacrifices, which now impact an increasingly large majority of the population. In recent years, the discipline has begun to prioritize human factors over utilitarian efficiency. Thousands of years of living in rural settings makes urban living hard for most people's biology. Connection to nature and time outdoors even in small amounts has been shown to be a vital part maintaining physical and mental health (DOTHIS:: Find Source). In an effort to make urban spaces more livable, planners are turning to parks and natural areas to connect people to nature.
+Urban planning has existed for centuries out of necessity, historically dominated by efficiency and utilitarianism, optimizing the world we live in for profitability, corporate productivity, and automobile-based mobility. This optimization came with sacrifices, which now impact an increasingly large majority of the population. In recent years, the discipline has begun to prioritize human factors over utilitarian efficiency. Thousands of years of living in rural settings makes urban living hard for most people's biology. Connection to nature and time outdoors even in small amounts has been shown to be a vital part maintaining physical and mental health (nature&health). In an effort to make urban spaces more livable, planners are turning to parks and natural areas to connect people to nature.
 
 <p>
 
@@ -84,7 +84,7 @@ These data are lacking a shared numerical position data type but share a city na
 The cities found in only one dataset will be cut from the data to accommodate the limited scope of the project. With a bigger scope it is possible that additional data could be used to understand these patterns with more depth.
 :::
 
-4.  Prep data and split it into training and testing datasets. Perform a 10-fold cross-validation on training data.
+4.  Prep data and split it into training and testing datasets. Perform a 3-fold cross-validation on training data.
 5.  Create a recipe.
 6.  Set up several models in regression mode.
 7.  Create a workflow set including the previously written models and the recipe.
@@ -240,6 +240,7 @@ land_area_plot <- ggplot(urban_parks_data, aes(x = as.numeric(land_area))) +
 land_vs_park_area_plot <- ggplot(urban_parks_data, aes(x = as.numeric(land_area), y = parkland_area)) +
   geom_point(color = "forestgreen") +
   labs(x = "Land Area (Acres)", y = "Parkland Area\n(Acres)", title = "Land Area vs Parkland Area") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "darkgray") +
   scale_x_continuous(labels = scales::label_comma()) +
   scale_y_continuous(labels = scales::label_comma()) +
   theme_minimal()
@@ -247,6 +248,7 @@ land_vs_park_area_plot <- ggplot(urban_parks_data, aes(x = as.numeric(land_area)
 # Scatterplot: Population Density vs Parkland Percent
 density_vs_park_percent_plot <- ggplot(urban_parks_data, aes(x = as.numeric(pop_density), y = parkland_percent)) +
   geom_point(color = "darkorange") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "darkgray") +
   labs(x = "Population Density (People/Acre)", y = "Percent Parkland", title = "Population Density vs\nParkland Percent") +
   scale_x_continuous(labels = scales::label_comma()) +
   scale_y_continuous(labels = scales::label_comma()) +
@@ -255,6 +257,7 @@ density_vs_park_percent_plot <- ggplot(urban_parks_data, aes(x = as.numeric(pop_
 # Scatterplot: Designed-Natural Park Area Ratio vs Parkland Percent
 dn_area_ratio_vs_park_percent_plot <- ggplot(urban_parks_data, aes(x = dn_area_ratio, y = parkland_percent)) +
   geom_point(color = "mediumvioletred") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "darkgray") +
   labs(x = "Designed-Natural Park Area Ratio", y = "Percent Parkland", title = "Designed-Natural Park Area\nRatio vs Parkland Percent") +
   scale_x_continuous(labels = scales::label_comma()) +
   scale_y_continuous(labels = scales::label_comma()) +
@@ -263,24 +266,28 @@ dn_area_ratio_vs_park_percent_plot <- ggplot(urban_parks_data, aes(x = dn_area_r
 # Scatterplot: Population Near Parks vs Mean % Open Space Access"
 pop_park_proximity_plot <- ggplot(urban_parks_data, aes(x = mean_percent_open_space_access, y = (pop_near_parks/100000))) +
   geom_point(color = "cadetblue") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "darkgray") +
   labs(x = "Mean % Open Space Access", y = "100k Population\nNear Parks", title = "Population Near Parks vs\nMean % Open Space Access") +
   theme_minimal()
 
 # Scatterplot: Percent Open Space Access vs Percent Built Open Space
 open_space_access_vs_built_plot <- ggplot(urban_parks_data, aes(x = mean_percent_open_space_access, y = mean_percent_built_open_space)) +
   geom_point(color = "seagreen") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "darkgray") +
   labs(x = "Mean % Open Space Access", y = "Mean % Built\nOpen Space", title = "Accessibility of Built Open Space") +
   theme_minimal()
 
 # Scatterplot: Land Per Capita vs Parkland Area
 land_pc_vs_park_area_plot <- ggplot(urban_parks_data, aes(x = land_per_capita, y = parkland_area)) +
   geom_point(color = "royalblue") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "darkgray") +
   labs(x = "Land Per Capita (Acres)", y = "Parkland Area (Acres)", title = "Land Per Capita vs Parkland Area") +
   theme_minimal()
 
 # Scatterplot: Parkserve Proxomity Data vs\nUN Access Data
 pct_walk_vs_osa_plot <- ggplot(urban_parks_data, aes(x = percent_half_mile_walk, y = mean_percent_open_space_access)) +
   geom_point(color = "darkred") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "darkgray") +
   labs(x = "% of Pop. < 0.5 Miles\nfrom a Park", y = "Mean % Open\nSpace Access", title = "Park Proximity (Parkserve)\n vs Access (UN)") +
   theme_minimal()
 
@@ -339,6 +346,15 @@ pt2_eda_plots <- (dn_area_ratio_vs_park_percent_plot | pct_walk_vs_osa_plot) /
   pt2_eda_plots
   bos_corr_plot
   osa_corr_plot
+  
+  
+  # Create Presentation Materials (uncomment to use)
+# pres_plot1 <- (land_area_plot | land_vs_park_area_plot) /
+  # (land_pc_vs_park_area_plot | density_vs_park_percent_plot)
+# pres_plot2 <- (pop_park_proximity_plot | pct_walk_vs_osa_plot)
+
+# pres_plot1
+# pres_plot2
 
 ```
 
