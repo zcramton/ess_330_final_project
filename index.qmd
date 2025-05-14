@@ -36,19 +36,14 @@ Prior to the 2020 Census urban areas were defined as any area with greater than 
   
   In the century since the 1920 census the percentage of individuals living in urban areas has increased to 80.7% [@slack2020changing]. As more people moved to urban areas, those areas expanded forming urbanized areas and large cities.
   
-  Urban planning has existed for centuries out of necessity, historically dominated by efficiency and utilitarianism, optimizing the world we live in for profitability, corporate productivity, and automobile-based mobility. This optimization came with sacrifices, which now impact an increasingly large majority of the population. In recent years, the discipline has begun to prioritize human factors over utilitarian efficiency. Thousands of years of living in rural settings makes urban living hard for most people's biology. Connection to nature and time outdoors even in small amounts has been shown to be a vital part maintaining physical and mental health (nature&health). In an effort to make urban spaces more livable, planners are turning to parks and natural areas to connect people to nature.
+  Urban planning has existed for centuries out of necessity, historically dominated by efficiency and utilitarianism, optimizing the world we live in for profitability, corporate productivity, and automobile-based mobility. This optimization came with sacrifices, which now impact an increasingly large majority of the population. In recent years, the discipline has begun to prioritize human factors over utilitarian efficiency. Thousands of years of living in rural settings makes urban living hard for most people's biology. Connection to nature and time outdoors even in small amounts has been shown to be a vital part maintaining physical and mental health (@nature-health). In an effort to make urban spaces more livable, planners are turning to parks and natural areas to connect people to nature.
 
   Equity issues aside, overturning and correcting more than a century of bad planning is a daunting task. Many cities filled in and built up over the course of the 20th century as land became a premium commodity. How does this density present significant challenges for today's planning professionals? This research seeks to investigate the relationship between urban demographics like density, and park access. In exploring this relationship, we hypothesize that there is an intermediate/sublinear relationship between urban population density and public open space availability.
 
 ### Data Overview
 
-<p>
-
-This report uses data from the UN-Habitat Urban Indicators Database and the ParkServe® Database maintained by the Trust for Public Land. The UN data relates to the UN-SDG 11.7.1 pertaining to access to open spaces and green areas.
-
-<p>
-
-The January 2025 version of the UN Open Spaces and Green Areas data includes the average share of urban areas allocated to streets and open public spaces as well as the share of the urban population with convenient access to an open public space.
+  This report uses data from the UN-Habitat Urban Indicators Database and the ParkServe® Database maintained by the Trust for Public Land. The UN data relates to the UN-SDG 11.7.1 pertaining to access to open spaces and green areas.
+  The January 2025 version of the UN Open Spaces and Green Areas data includes the average share of urban areas allocated to streets and open public spaces as well as the share of the urban population with convenient access to an open public space.
 
 ::: callout-note
 ### UN Definition
@@ -321,12 +316,11 @@ pt2_eda_plots <- (dn_area_ratio_vs_park_percent_plot | pct_walk_vs_osa_plot) /
   top10_park_percent_flex
   bottom10_park_percent_flex 
   
-  # Display patchwork plots
-  pt1_eda_plots
-  pt2_eda_plots
-  bos_corr_plot
-  osa_corr_plot
-  
+  # Save patchwork and corr plots
+  ggsave("imgs/pt1_eda_plots.png", plot = pt1_eda_plots, width = 8, height = 6, units = "in")
+  ggsave("imgs/pt2_eda_plots.png", plot = pt2_eda_plots, width = 8, height = 6, units = "in")
+  ggsave("imgs/bos_corr_plot.png", plot = bos_corr_plot, width = 8, height = 6, units = "in")
+  ggsave("imgs/osa_corr_plot.png", plot = osa_corr_plot, width = 8, height = 6, units = "in")
   
   # Create Presentation Materials (uncomment to use)
 # pres_plot1 <- (land_area_plot | land_vs_park_area_plot) /
@@ -337,13 +331,16 @@ pt2_eda_plots <- (dn_area_ratio_vs_park_percent_plot | pct_walk_vs_osa_plot) /
 # pres_plot2
 
 ```
+![](imgs/pt1_eda_plots.png)
+![](imgs/pt2_eda_plots.png)
+![](imgs/bos_corr_plot.png)
+![](imgs/osa_corr_plot.png)
+
 ### EDA Summary
   The majority of the city's land areas are distributed within 100,000 and 300,000 acres of a city's land area. This distribution ranged from 100,000 acres to 550,000 acres, with an outlying data point above 900,000 acres (Distribution of City Land Areas DOTHIS : change to fig number). The frequency of land area decreases as land area increases. We found little to no linear relationship between city land area and city parkland area (Land Area vs Parkland Area DOTHIS : change to fig number).). City land per capita, measured in acres, does not correlate with Parkland area (Land Per Capita vs Parkland Area DOTHIS : change to fig number).). The majority of cities have less than one acre of land per capita, and less than 125,000 acres of parkland per capita. Population density is weakly positive correlation with population density. As population density increases, the percentage of parkland in a city also increases (Population Density vs Parkland Percent). In Figure (Population Near Narks vs Mean % Open Space Access DOTHIS : change to fig number).), the majority of data points are below the 45-degree dashed line, meaning that for every data point, the population living near parks is consistently lower than the mean percentage of open space access. Figure (Park proximity vs Access DOTHIS : change to fig number).) does not show any or a weak correlation between the variables. When examining the correlation of all features within the dataset, we found that Parkland per Capita and Parkland per 1,000 People were the two most positively correlated features to the Mean Percentage of Built Open Space (figure needed DOTHIS : change to fig number).). When applying the same correlation analysis to our second focus variable, Mean Percentage Open Space Access, Park Units Per Area, and Percent of Residents within a Half Mile Walk were the most positively correlated to the variable. 
 
 ### Modeling
-
-#### Prep Data
-```{r Data Splitting}
+```{r Data Prep}
 # Set a random seed for reproducibility
 set.seed(567)
 
@@ -356,7 +353,6 @@ up_test <- testing(up_split)
 up_3cv <- vfold_cv(up_train, v = 3, strata = NULL)
 ```
 
-#### Create Recipes
 ```{r Preprocessing Recipes}
 # Recipe for mean_percent_built_open_space
 rec_bos_1 <- recipe(mean_percent_built_open_space ~ parkland_per_capita + designed_park_area + land_per_capita + natural_park_area + parkland_area, data = up_train) %>%
@@ -391,7 +387,6 @@ rec_osa_2 <- recipe(mean_percent_open_space_access ~ parkland_percent + percent_
   
 ```
 
-#### Build Models
 ```{r Model Specifications}
 # Linear Regression
 lm_model <- linear_reg() %>%
@@ -411,7 +406,6 @@ xg_model <- boost_tree() %>%
 
 ```
 
-#### Combine Models and Recipes
 ```{r Workflow setup}
 # Compile list of models
 models <- list(lm = lm_model, rf = rf_model, xg = xg_model)
@@ -436,19 +430,23 @@ osa_wf_set <- workflow_set(
 #### Vizualize & Rank Model Performance
 ```{r Visualize Model Performance & Ranking}
 # Visualize Model Performance
-autoplot(bos_wf_set) + 
+bos_modeling_plot <- autoplot(bos_wf_set) + 
   aes(x = wflow_id) + 
   labs(title = "Figure 11: BOS Resample Metrics",
        x = "Model") +
   theme(plot.title = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 45, hjust = 1))
 
-autoplot(osa_wf_set) + 
+osa_modeling_plot <- autoplot(osa_wf_set) + 
   aes(x = wflow_id) +
   labs(title = "Figure 12: OSA Resample Metrics",
        x = "Model") + 
   theme(plot.title = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Save Model Performance Plots
+ggsave("imgs/bos_modeling_plot.png", plot = bos_modeling_plot, width = 8, height = 6, units = "in")
+ggsave("imgs/osa_modeling_plot.png", plot = osa_modeling_plot, width = 8, height = 6, units = "in")
 
 # Rank Results
 rank_results(bos_wf_set, rank_metric = "rsq", select_best = TRUE) %>% 
@@ -460,6 +458,8 @@ rank_results(osa_wf_set, rank_metric = "rsq", select_best = TRUE) %>%
   set_caption("Table 5: Ranking of OSA Model Results")
 
 ```
+![]( imgs/bos_modeling_plot.png)
+![]( imgs/osa_modeling_plot.png)
 
 #### Model Tuning
 ```{r Model Tuning}
@@ -498,9 +498,11 @@ bos_model_params <- tune_grid(
   param_info = bos_dials
 )
 
-autoplot(bos_model_params) +
+bos_params_plot <- autoplot(bos_model_params) +
   labs(title = "Figure 13: BOS Tuning Metrics") + 
   theme(plot.title = element_text(hjust = 0.5))
+
+ggsave("imgs/bos_params_plot.png", plot = bos_params_plot, width = 8, height = 6, units = "in")
 
 bos_preds <- collect_metrics(bos_model_params)
 bos_hp_best <- select_best(bos_model_params, metric = "mae")
@@ -539,9 +541,11 @@ osa_model_params <- tune_grid(
   control = control_grid(save_pred = TRUE)
 )
 
-autoplot(osa_model_params) +
+osa_params_plot <- autoplot(osa_model_params) +
   labs(title = "Figure 14: OSA Tuning Metrics") + 
   theme(plot.title = element_text(hjust = 0.5))
+
+ggsave("imgs/osa_params_plot.png", plot = osa_params_plot, width = 8, height = 6, units = "in")
 
 osa_preds <- collect_metrics(osa_model_params)
 osa_hp_best <- select_best(osa_model_params, metric = "mae")
@@ -550,6 +554,8 @@ osa_final_wf <- finalize_workflow(tune_osa_wf, osa_hp_best)
 osa_final_fit <- last_fit(osa_final_wf, split = up_split)
 osa_final_metrics <- collect_metrics(osa_final_fit)
 ```
+![]( imgs/bos_params_plot.png)
+![]( imgs/osa_params_plot.png)
 
 #### Model Tuning Results
 ```{r Model Tuning Results}
@@ -585,7 +591,7 @@ bos_map_resid <- ggplot(bos_augmented_preds, aes(x = .pred, y = residual_sq)) +
 
 # Combine plots
 bos_maps_combined <- bos_map_preds | bos_map_resid
-print(bos_maps_combined)
+ggsave("imgs/bos_maps_combined.png", plot = bos_maps_combined, width = 8, height = 6, units = "in")
 
 osa_final_fit_full <- fit(osa_final_wf, data = urban_parks_data)
 osa_augmented_preds <- augment(osa_final_fit_full, new_data = urban_parks_data)
@@ -617,9 +623,11 @@ osa_map_resid <- ggplot(osa_augmented_preds, aes(x = .pred, y = residual_sq)) +
 
 # Combine OSA plots
 osa_maps_combined <- osa_map_preds | osa_map_resid
-print(osa_maps_combined)
+ggsave("imgs/osa_maps_combined.png", plot = osa_maps_combined, width = 8, height = 6, units = "in")
 
 ```
+![]( imgs/bos_maps_combined.png)
+![]( imgs/osa_maps_combined.png)
 
 #### Modeling Summary
 
