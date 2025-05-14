@@ -1,5 +1,5 @@
 ---
-title: 'ESS 330 Final Project Report - Lab 9'
+title: 'ESS 330 Final Project Report'
 authors:
   - name: Zachary Cramton
     affiliation: Colorado State University
