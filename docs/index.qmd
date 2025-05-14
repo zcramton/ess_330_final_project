@@ -25,7 +25,7 @@ csl: apa.csl
 ## Abstract
   Currently, over 50% of the world’s population is living in urban areas and large cities. Urban planning has a key role in the experiences of residents living in these areas, where efficiency, utilitarianism, and profitability have dominated. With more studies focusing on a connection to nature and time outdoors with positive mental and physical health, we wanted to determine if any changes had been made in the urban planning field with regards to this aspect. We hypothesized that there is a linear relationship between urban population density and public open space availability. To determine this, we used datasets from the UN-Habitat Urban Indicators Database and the ParkServ Database. We formatted these datasets to fit together and work efficiently through using R, conducted an exploratory data analysis to define our variables, and then used a machine learning workflow to explore predicted values for different cities. For our built open space results, we used a boosted tree model, which gave us a 2.7644 RMSE and a 0.0136 R-squared, which provide an insignificant relationship. For our open space access results, we used a linear regression model which gave us an 18.5488 RMSE and a 0.6653 R-squared. Looking at these results, we did not find a significant relationship between urban population density and public open space availability but are interested to see if there is potential to develop this relationship. Urban planners should be shifting their values and goals for cities from efficiency and utilitarianism to an increase in natural open spaces instead. 
   
-### Introduction
+## Introduction
   Since 2008, the majority of the world's population has lived in urban areas, a result of urbanization in developing countries [@kohlhase2013new; @beall2010urbanization]. The United States developed earlier than many nations, with more than 50 percent of the population living in urban areas by by the 14th Census in 1920.
 
 ::: callout-note
@@ -40,7 +40,7 @@ Prior to the 2020 Census urban areas were defined as any area with greater than 
 
   Equity issues aside, overturning and correcting more than a century of bad planning is a daunting task. Many cities filled in and built up over the course of the 20th century as land became a premium commodity. How does this density present significant challenges for today's planning professionals? This research seeks to investigate the relationship between urban demographics like density, and park access. In exploring this relationship, we hypothesize that there is an intermediate/sublinear relationship between urban population density and public open space availability.
 
-### Data Overview
+## Data Overview
 
   This report uses data from the UN-Habitat Urban Indicators Database and the ParkServe® Database maintained by the Trust for Public Land. The UN data relates to the UN-SDG 11.7.1 pertaining to access to open spaces and green areas.
   The January 2025 version of the UN Open Spaces and Green Areas data includes the average share of urban areas allocated to streets and open public spaces as well as the share of the urban population with convenient access to an open public space.
@@ -59,7 +59,7 @@ These data collected by the UN were collected in 2020 and provided as a .xls for
 
 These data are lacking a shared numerical position data type but share a city name column formatted as "city_name, two_letter_state_abbreviation". There is not perfect overlap between cities with data in each database however, there are 25 cities shared between the datasets. Cities present in only one data set will be culled when the data is joined.
 
-### Methods
+## Methods
 
   Firstly, we cleaned the data. This is important for our project because the raw data was downloaded as Excel spreadsheets, but some reformatting in Excel was required to effectively export as a .csv file and import the new summarized file to RStudio. Any remaining data cleaning occurred in R as needed, including header changes and creation of additional columns to reflect relational data. We then conducted exploratory data analysis (EDA) to visualize the data to further understand what we were looking at. Next, we joined the datasets by “city name” to have a complete working dataset. This data was combined into a single data frame, using an inner join, because of the high number of cities in one dataset that the other lacks. The new dataset includes only cities found in both datasets, with columns from both.  
 
@@ -427,7 +427,7 @@ osa_wf_set <- workflow_set(
 
 ```
 
-#### Vizualize & Rank Model Performance
+### Vizualizing and Ranking Model Performance
 ```{r Visualize Model Performance & Ranking}
 # Visualize Model Performance
 bos_modeling_plot <- autoplot(bos_wf_set) + 
@@ -461,7 +461,7 @@ rank_results(osa_wf_set, rank_metric = "rsq", select_best = TRUE) %>%
 ![]( imgs/bos_modeling_plot.png)
 ![]( imgs/osa_modeling_plot.png)
 
-#### Model Tuning
+### Model Tuning
 ```{r Model Tuning}
 # BOS Model Tuning (XGBoost)
 tuned_bos_model <- boost_tree(
@@ -557,7 +557,7 @@ osa_final_metrics <- collect_metrics(osa_final_fit)
 ![]( imgs/bos_params_plot.png)
 ![]( imgs/osa_params_plot.png)
 
-#### Model Tuning Results
+### Model Tuning Results
 ```{r Model Tuning Results}
 # Finalize and fit full model for BOS
 bos_final_fit_full <- fit(bos_final_wf, data = urban_parks_data)
@@ -585,7 +585,7 @@ bos_map_preds <- ggplot(bos_augmented_preds, aes(x = .pred, y = mean_percent_bui
 bos_map_resid <- ggplot(bos_augmented_preds, aes(x = .pred, y = residual_sq)) +
   geom_point(aes(color = residual_sq), size = 3, alpha = 0.8) +
   scale_color_viridis_c(name = "Residual²") +
-  labs(title = "BOS: Squared Residuals", x = "Predicted", y = "Residual²") +
+  labs(title = "Figure 15: BOS Squared Residuals", x = "Predicted", y = "Residual²") +
   theme_minimal()+
   theme(plot.subtitle.title = element_text("Figure 16"))
 
@@ -617,7 +617,7 @@ osa_map_preds <- ggplot(osa_augmented_preds, aes(x = .pred, y = mean_percent_ope
 osa_map_resid <- ggplot(osa_augmented_preds, aes(x = .pred, y = residual_sq)) +
   geom_point(aes(color = residual_sq), size = 3, alpha = 0.8) +
   scale_color_viridis_c(name = "Residual²") +
-  labs(title = "OSA: Squared Residuals", x = "Predicted", y = "Residual²") +
+  labs(title = "Figure 16: OSA Squared Residuals", x = "Predicted", y = "Residual²") +
   theme_minimal()+
   theme(plot.subtitle.title = element_text("Figure 18"))
 
@@ -629,14 +629,14 @@ ggsave("imgs/osa_maps_combined.png", plot = osa_maps_combined, width = 8, height
 ![]( imgs/bos_maps_combined.png)
 ![]( imgs/osa_maps_combined.png)
 
-#### Modeling Summary
+### Modeling Summary
 
   Initial modeling results for Built Open Space did not perform well. Boosttree, with the engine xgboost, has the lowest Root Mean Standard Error (RMSE), and the highest R-squared value. The RMSE value was ~5, and the R-squared was 0.25, meaning 25% of the variance can be explained by this regression model. (DOTHIS : add a figure number). Like Built Open Space, the initial models for Open Space Access did not have a clear winner that stood out. Linear Regression was chosen as the best model to display Open Space Access results because it had a relatively low RMSE and an R-squared value of 0.50, meaning 50% of the variance in this model can be explained (DOTHIS : add a figure number). After tuning for RMSE, the Boosted Tree model had an RMSE of 2.76 and an R-squared value of 0.01%. The Built Open Space Predicted vs. Actual values appeared to have a linear relationship, however, the squared residuals show little to no correlation between the predicted values and the residuals (DOTHIS : add a figure number). For Open Space Access, using Linear Regression resulted in an RMSE of 18.55 and an R-squared value of 0.66. Like Built Open Space, the predicted and actual values for Open Space Access appear to have a linear relationship, but the residuals do not. Figure __DOTHIS : add a figure number__, shows an outlier in the Open Space Access Predicted vs. Residual values, where the predicted value is very low (>20), and the residual is extremely high, with a value of over 150.  
   
-### Discussion
+## Discussion
   Our research found no significant correlation between urban population density and public open space access. The small sample size of 25 cities led to some analysis issues when looking at the relationship between urban demographics and park access. Additionally, Anchorage, Alaska, was an outlying point throughout the analysis, consistently being at the extreme ends of our graphs. Yet, due to our small sample size, it was decided not to remove Alaska and make our sample size even smaller. Anchorage tended to skew the data because there is much higher public open space availability with much less population density due to the nature of the state. The small sample size also created issues in our modeling, such as having to perform a 3-fold cross-validation instead of a standard 10-fold cross-validation (see Modeling section). Figure __ (DOTHIS : add in figure number for BOS  actual vs predicted) does not show a relationship between Built Open Space predicted vs. actual residuals, meaning the model failed to accurately predict the amount of built open space in the cities. We did not find any correlation between a city’s population density and the amount of open space the city has, therefore, we reject the hypothesis that there is an intermediate/sublinear relationship between urban population density and public open space availability. This means that an increase in population or population density does not lead to city planners creating more green spaces to accommodate a growing urban population. The mental and physical health effects of a large, urban population without sufficient access to outdoor spaces are unknown and are grounds for further study.  
   
-### Conclusion
+## Conclusion
   In conclusion, we found no correlation between urban population density and public open space access, meaning that there has not been a noticeable change in the urban planning sector to accommodate a continuously growing urban population. Additionally, it is unknown what the mental health effects for this population will be. Looking forward, it would be best to find a different dataset with more cities for our sample size so that we could remove any outliers that may skew our data, allowing us to come to a stronger conclusion. It is important for urban planners to start shifting towards more public open space access to make substantial improvements to society’s overall mental and physical health. This change could be difficult due to the recent and historical lack of public open space for city residents, but it is a change that should be recognized and attempted to move towards. 
   
 ## References
